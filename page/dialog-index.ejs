@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>对话文本</title>
+        <link rel="stylesheet" href="/r/static/basic.css" />
+        <link rel="stylesheet" href="/r/static/style.css" />
+        <link rel="stylesheet" href="/r/static/dialog-index.css" />
+    </head>
+    <body>
+        <h1>对话文本</h1>
+        <a class="nav-up" href="/">&lt; 返回</a>
+        <% sections.forEach(function(sec) { %>
+        <details open>
+            <summary><%= sec.label %></summary>
+            <% sec.groups.forEach(function(g) { %>
+            <details open>
+                <summary><%= g.heading %></summary>
+                <ul>
+                    <% g.items.forEach(function(item) { %>
+                    <li><a href="<%= item.url %>"><%= item.label %></a></li>
+                    <% }) %>
+                </ul>
+            </details>
+            <% }) %>
+        </details>
+        <% }) %>
+    </body>
+</html>

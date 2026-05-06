@@ -1,0 +1,30 @@
+/* ------ */
+/* Normalize */
+
+*:disabled, *[disabled] {
+    cursor: not-allowed;
+}
+*[hidden] {
+    display: none !important;
+}
+a, button {
+    cursor: pointer;
+}
+a:any-link {
+    text-decoration: none;
+}
+a:any-link:hover {
+    text-decoration: underline;
+}
+
+a {
+    color: var(--link-color, blue);
+}
+
+.flexible-space {
+    flex: 1;
+}
+
+:root {
+    font-size: var(--font-size, unset);
+}

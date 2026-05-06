@@ -1,0 +1,39 @@
+import { SitemapStream, streamToPromise } from 'sitemap';
+import { Readable } from 'node:stream';
+import { writeFile, readdir, stat } from 'node:fs/promises';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const DIST = join(__dirname, '..', 'dist');
+const BASE = 'https://www.bh3text.com';
+
+async function* walk(dir, base = '') {
+    const entries = await readdir(dir, { withFileTypes: true });
+    for (const e of entries) {
+        const full = join(dir, e.name);
+        const rel = base + '/' + e.name;
+        if (e.isDirectory()) {
+            yield* walk(full, rel);
+        } else if (e.name.endsWith('.html')) {
+            const s = await stat(full);
+            yield { url: rel, lastmod: s.mtime.toISOString().split('T')[0] };
+        }
+    }
+}
+
+export async function sitemap() {
+    const links = [];
+    for await (const { url, lastmod } of walk(DIST)) {
+        // index.html → /
+        let clean = url;
+        if (clean.endsWith('/index.html')) clean = clean.slice(0, -10);
+        if (clean.endsWith('.html')) clean = clean;
+        links.push({ url: clean, changefreq: 'monthly', lastmod });
+    }
+
+    const stream = new SitemapStream({ hostname: BASE });
+    const data = await streamToPromise(Readable.from(links).pipe(stream));
+    await writeFile(join(DIST, 'sitemap.xml'), data.toString(), 'utf-8');
+    console.log(`  Sitemap generated: ${links.length} URLs`);
+}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title><%= title %></title>
+        <link rel="stylesheet" href="/r/static/basic.css" />
+        <link rel="stylesheet" href="/r/static/style.css" />
+        <link rel="stylesheet" href="/r/static/dialogue.css" />
+    </head>
+    <body>
+        <div>
+            <% if (typeof up === 'string') { %><a class="nav-up" href="<%= up %>">&lt; 返回</a><% } %>
+            <nav class="page-nav">
+                <% if (typeof prev === 'object' && prev) { %><a class="nav-prev" href="<%= prev.url %>">← <%= prev.title %></a><% } else { %> <span></span> <% } %>
+                <% if (typeof next === 'object' && next) { %><a class="nav-next" href="<%= next.url %>"><%= next.title %> →</a><% } else { %> <span></span> <% } %>
+            </nav>
+            <h3><%= stageTitle %></h3>
+            <% if (typeof desc === 'string' && desc) { %>
+            <div class="desc"><%= desc %></div>
+            <% } %>
+            <% dialogs.forEach(function(dlg) { %>
+                <% if (dlg.synopsis) { %>
+                <div class="synopsis"><%= dlg.synopsis %></div>
+                <% } %>
+                <% if (dlg.step) { %>
+                <div class="step"><%= dlg.step %></div>
+                <% } else if (dlg.type === 'CG') { %>
+                <div class="cg">[CG: <%= dlg.cg %>]</div>
+                <% } else { %>
+                    <% dlg.lines.forEach(function(line) { %>
+                    <div class="dialog-line">
+                        <span class="dialog-actor"><%- line.actor %></span><% if (line.actor && line.content) { %><span class="a11y-helper">：</span><% } %><span class="dialog-content"><%- line.content %></span>
+                    </div>
+                    <% }) %>
+                <% } %>
+                <hr />
+            <% }) %>
+            <nav class="page-nav bottom">
+                <% if (typeof prev === 'object' && prev) { %><a class="nav-prev" href="<%= prev.url %>">← <%= prev.title %></a><% } else { %> <span></span> <% } %>
+                <% if (typeof next === 'object' && next) { %><a class="nav-next" href="<%= next.url %>"><%= next.title %> →</a><% } else { %> <span></span> <% } %>
+            </nav>
+        </div>
+    </body>
+</html>

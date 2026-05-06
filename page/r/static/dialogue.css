@@ -1,0 +1,61 @@
+h3 {
+    margin: 24px 0 8px 0;
+    color: #333;
+}
+.desc {
+    color: #444;
+    font-size: 14px;
+}
+.synopsis {
+    color: #555;
+    font-size: 14px;
+}
+.step {
+    font-weight: bold;
+    font-size: 14px;
+}
+.step::before {
+    content: "·";
+    margin-right: 0.5em;
+}
+.cg {
+    margin: 16px 0;
+    padding: 8px 14px;
+    background: #fff3cd;
+    border-radius: 4px;
+    color: #856404;
+    font-size: 14px;
+}
+.dialog-actor {
+    font-weight: bold;
+    color: #222;
+}
+.dialog-actor:not(:empty) {
+    margin-right: 0.5em;
+}
+.dialog-content {
+    color: #333;
+}
+.dialog-line {
+    font-size: 14px;
+}
+.page-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 8px 0 16px 0;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+}
+.page-nav.bottom {
+    border-bottom: none;
+    border-top: 1px solid #eee;
+    margin: 16px 0 8px 0;
+}
+.page-nav a {
+    color: #3366cc;
+}
+.nav-up {
+    flex: 0 0 auto;
+}

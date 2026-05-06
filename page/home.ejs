@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>崩坏3 文本</title>
+        <link rel="stylesheet" href="/r/static/basic.css" />
+        <link rel="stylesheet" href="/r/static/style.css" />
+        <link rel="stylesheet" href="/r/static/home.css" />
+    </head>
+    <body>
+        <h1>崩坏3 文本</h1>
+        <% modules.forEach(function(m) { %>
+        <div class="module">
+            <h3><a href="<%= m.url %>"><%= m.name %></a></h3>
+            <p><%= m.desc %></p>
+        </div>
+        <% }) %>
+    </body>
+</html>

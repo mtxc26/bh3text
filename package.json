@@ -1,0 +1,27 @@
+{
+  "name": "bh3text",
+  "version": "0.0.0",
+  "description": "[bh3text.com](https://www.bh3text.com/)",
+  "homepage": "https://github.com/mtxc26/bh3text#readme",
+  "bugs": {
+    "url": "https://github.com/mtxc26/bh3text/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mtxc26/bh3text.git"
+  },
+  "author": "",
+  "type": "module",
+  "scripts": {
+    "build-submodule": "node build-sub.js",
+    "build-only": "node build.js",
+    "build": "npm run build-submodule && npm run build-only"
+  },
+  "dependencies": {
+    "ejs": "^5.0.2",
+    "sitemap": "^9.0.1"
+  },
+  "devDependencies": {
+    "prettier": "^3.8.3"
+  }
+}
