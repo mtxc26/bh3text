@@ -111,3 +111,17 @@ export function procText(text) {
             '<ruby>$2<rp>(</rp><rt>$1</rt><rp>)</rp></ruby>')
         .replace(/\{(.+?)\}/g, (_, k) => PLACEHOLDERS[k] || `{${k}}`);
 }
+
+export function publicUrlFromPath(inputPath) {
+    let p = String(inputPath || '').replace(/\\/g, '/');
+
+    if (!p.startsWith('/')) p = '/' + p;
+
+    if (p.endsWith('/index.html')) {
+        p = p.slice(0, -'index.html'.length);
+    } else if (p.endsWith('.html')) {
+        p = p.slice(0, -'.html'.length);
+    }
+
+    return p || '/';
+}

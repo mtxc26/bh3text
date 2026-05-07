@@ -2,7 +2,7 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import ejs from 'ejs';
 import { fileURLToPath } from 'node:url';
-import { DOMAIN_URL_MAP, SITE_BASE, procText, addAssetRefs } from './util.mjs';
+import { DOMAIN_URL_MAP, SITE_BASE, procText, addAssetRefs, publicUrlFromPath } from './util.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -192,7 +192,7 @@ async function buildEr(template) {
             const blocks = stage._blocks;
             const outDir = join(DIST_DIR, 'er', chNum);
             await mkdir(outDir, { recursive: true });
-            const erUrl = `/dialog/er/${chNum}/${encodeURIComponent(stage.id)}.html`;
+            const erUrl = publicUrlFromPath(`/dialog/er/${chNum}/${encodeURIComponent(stage.id)}.html`);
             let html = ejs.render(template, {
                 title: stage.id,
                 stageTitle: stage.id,
@@ -200,8 +200,18 @@ async function buildEr(template) {
                 desc: '',
                 dialogs: blocks,
                 up: `/dialog/er/${chNum}/`,
-                prev: i > 0 ? { url: `/dialog/er/${chNum}/${encodeURIComponent(validStages[i-1].id)}.html`, title: validStages[i-1].id } : null,
-                next: i < validStages.length - 1 ? { url: `/dialog/er/${chNum}/${encodeURIComponent(validStages[i+1].id)}.html`, title: validStages[i+1].id } : null,
+                prev: i > 0
+                    ? {
+                        url: publicUrlFromPath(`/dialog/er/${chNum}/${encodeURIComponent(validStages[i - 1].id)}.html`),
+                        title: validStages[i - 1].id,
+                    }
+                    : null,
+                next: i < validStages.length - 1
+                    ? {
+                        url: publicUrlFromPath(`/dialog/er/${chNum}/${encodeURIComponent(validStages[i + 1].id)}.html`),
+                        title: validStages[i + 1].id,
+                    }
+                    : null,
             }, { filename: TPL });
             html = await addAssetRefs(html);
             await writeFile(join(outDir, `${stage.id}.html`), html, 'utf-8');
@@ -267,12 +277,12 @@ export async function dialog() {
                 const dn = pg.contentId || pg.displayName || '';
                 const pageTitle = dn ? `${dn} ${stageTitle}` : stageTitle;
 
-                const prevPg = i > 0 ? validPages[i-1] : null;
-                const nextPg = i < validPages.length - 1 ? validPages[i+1] : null;
+                const prevPg = i > 0 ? validPages[i - 1] : null;
+                const nextPg = i < validPages.length - 1 ? validPages[i + 1] : null;
                 const prevTitle = prevPg ? (prevPg.title || prevPg.actName || prevPg.displayName || '') : '';
                 const nextTitle = nextPg ? (nextPg.title || nextPg.actName || nextPg.displayName || '') : '';
 
-                const pagePath = `/dialog/${urlDir}/${ch.chapter}/${filename(pg)}`;
+                const pagePath = publicUrlFromPath(`/dialog/${urlDir}/${ch.chapter}/${filename(pg)}`);
                 let html = ejs.render(template, {
                     title: pageTitle || ch.title,
                     stageTitle: pageTitle,
@@ -280,8 +290,18 @@ export async function dialog() {
                     desc: pg.desc || '',
                     dialogs: pg.blocks,
                     up: `/dialog/${urlDir}/${ch.chapter}/`,
-                    prev: prevPg ? { url: `/dialog/${urlDir}/${ch.chapter}/${filename(prevPg)}`, title: prevTitle } : null,
-                    next: nextPg ? { url: `/dialog/${urlDir}/${ch.chapter}/${filename(nextPg)}`, title: nextTitle } : null,
+                    prev: prevPg
+                        ? {
+                            url: publicUrlFromPath(`/dialog/${urlDir}/${ch.chapter}/${filename(prevPg)}`),
+                            title: prevTitle,
+                        }
+                        : null,
+                    next: nextPg
+                        ? {
+                            url: publicUrlFromPath(`/dialog/${urlDir}/${ch.chapter}/${filename(nextPg)}`),
+                            title: nextTitle,
+                        }
+                        : null,
                 }, { filename: TPL });
                 html = await addAssetRefs(html);
                 await writeFile(join(outDir, filename(pg)), html, 'utf-8');
@@ -292,3 +312,4 @@ export async function dialog() {
     }
     console.log(`Dialog pages: ${total} total (main1+main2), ${erTotal} er.`);
 }
+

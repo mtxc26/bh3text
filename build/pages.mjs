@@ -10,6 +10,7 @@ import {
     DOMAIN_URL_MAP,
     getErChapters,
     addAssetRefs,
+    publicUrlFromPath,
 } from './util.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -118,9 +119,8 @@ export async function pages() {
                         // main1: stages 是数组，顺序即正确顺序
                         for (const act of chData.stages || []) {
                             for (const sec of act.data || []) {
-                                const fn = `${sec.displayName}.html`;
                                 items.push({
-                                    url: `/dialog/${urlDir}/${ch.chapter}/${fn}`,
+                                    url: `/dialog/${urlDir}/${ch.chapter}/${sec.displayName}`,
                                     label: `${sec.displayName} ${sec.displayTitle || ''}`,
                                 });
                             }
@@ -133,14 +133,14 @@ export async function pages() {
                         for (const ci of chData.content || []) {
                             if (!used.has(ci.id) && ci.dialogs) {
                                 items.push({
-                                    url: `/dialog/${urlDir}/${ch.chapter}/${ci.id}.html`,
+                                    url: `/dialog/${urlDir}/${ch.chapter}/${ci.id}`,
                                     label: ci.id,
                                 });
                             }
                         }
                     } else {
                         // main2: stages 是 dict，按 STAGE_ORDER 遍历
-                        const to = ['Main','Companion','Celebrition','Branch','Entrust'];
+                        const to = ['Main', 'Companion', 'Celebrition', 'Branch', 'Entrust'];
                         for (const cat of to) {
                             const stageItems = chData.stages?.[cat];
                             if (!stageItems) continue;
@@ -154,7 +154,7 @@ export async function pages() {
                                     ci => ci.series === info.id && ci.dialogs?.length);
                                 if (!hasContent) continue;
                                 items.push({
-                                    url: `/dialog/${urlDir}/${ch.chapter}/${cat.toLowerCase()}${idx}.html`,
+                                    url: `/dialog/${urlDir}/${ch.chapter}/${cat.toLowerCase()}${idx}`,
                                     label: info.Title || `${cat}${idx}`,
                                 });
                             }
@@ -178,7 +178,7 @@ export async function pages() {
     for (const ch of (await getErChapters())) {
         const stages = erIdx[ch.chapter] || [];
         const items = stages.map((s) => ({
-            url: `/dialog/er/${ch.chapter}/${encodeURIComponent(s.id)}.html`,
+            url: `/dialog/er/${ch.chapter}/${encodeURIComponent(s.id)}`,
             label: s.id,
         }));
         html = ejs.render(tplChapter, {

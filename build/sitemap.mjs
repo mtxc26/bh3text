@@ -3,7 +3,7 @@ import { Readable } from 'node:stream';
 import { writeFile, readdir, stat } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SITE_BASE } from './util.mjs';
+import { SITE_BASE, publicUrlFromPath } from './util.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DIST = join(__dirname, '..', 'dist');
@@ -25,9 +25,8 @@ async function* walk(dir, base = '') {
 export async function sitemap() {
     const links = [];
     for await (const { url, lastmod } of walk(DIST)) {
-        let clean = url;
-        const isIndex = clean.endsWith('/index.html');
-        if (isIndex) clean = clean.slice(0, -10);
+        const clean = publicUrlFromPath(url);
+        const isIndex = url.endsWith('/index.html');
         const priority = clean === '/' ? 1.0 : isIndex ? 0.8 : 0.5;
         links.push({ url: clean, changefreq: 'monthly', lastmod, priority });
     }
