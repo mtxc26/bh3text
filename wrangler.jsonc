@@ -1,0 +1,8 @@
+{
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "none"
+  },
+  "name":"bh3text",
+  "compatibility_date":"2026-05-06"
+}

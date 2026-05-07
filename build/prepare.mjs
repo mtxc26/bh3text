@@ -10,8 +10,6 @@ const OUT_DIRS = [
 ];
 
 export async function prepare() {
-    // 只清空内容，不删除 dist/ 本身
-    // 这样即使有进程 CWD 在 dist/ 里面也不会炸
     try {
         const entries = await readdir('dist');
         for (const entry of entries) {
@@ -22,7 +20,7 @@ export async function prepare() {
         await mkdir('dist', { recursive: true });
     }
     for (const d of OUT_DIRS) await mkdir(d, { recursive: true });
-    await cp('page/r', 'dist/r', { recursive: true });
-    await cp('robots.txt', 'dist/robots.txt');
+    await cp('runtime/dist', 'dist/r/runtime', { recursive: true });
+    await cp('public', 'dist', { recursive: true });
     console.log('dist prepared.');
 }

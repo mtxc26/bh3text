@@ -1,0 +1,24 @@
+{
+  "name": "bh3text-runtime",
+  "description": "",
+  "author": "",
+  "type": "module",
+  "scripts": {
+    "dev": "rolldown -c --watch",
+    "type-check": "tsc --noEmit",
+    "build": "npm run type-check && npm run build-only && npm run obfuscate",
+    "build-only": "rolldown -c",
+    "obfuscate": "node ./obfuscate.js"
+  },
+  "devDependencies": {
+    "@tsconfig/node24": "^24.0.4",
+    "javascript-obfuscator": "^5.4.2",
+    "rolldown": "^1.0.0",
+    "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "cookie": "^1.1.1",
+    "lit": "^3.3.2",
+    "vue": "^3.5.34"
+  }
+}

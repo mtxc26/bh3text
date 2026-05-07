@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -36,10 +37,33 @@ export const DOMAIN_LABELS = {
     ow: '开放世界', ex: '编年史', novel: '小说',
 };
 
+export const SITE_BASE = 'https://www.bh3text.com';
+
 export const DOMAIN_URL_MAP = {
     main: 'mainline/1', main2: 'mainline/2',
     er: 'er', ow: 'ow', ex: 'ex', novel: 'novel',
 };
+
+// ---- Asset cache busting via SHA256 ----
+
+const _refCache = new Map();
+
+export async function addAssetRefs(html) {
+    const ROOT = join(__dirname, '..');
+    const re = /(href|src)="(\/r\/[^"]+)"/g;
+    const matches = [...html.matchAll(re)];
+    const urls = [...new Set(matches.map(m => m[2]))];
+
+    for (const url of urls) {
+        if (!_refCache.has(url)) {
+            const content = await readFile(join(ROOT, 'dist', url));
+            const hash = createHash('sha256').update(content).digest('hex');
+            _refCache.set(url, url + '?ref=' + hash);
+        }
+    }
+
+    return html.replace(re, (m, attr, url) => `${attr}="${_refCache.get(url)}"`);
+}
 
 // ---- Er chapter list from data/dist/basic/basic.js ----
 

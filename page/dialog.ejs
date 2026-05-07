@@ -1,45 +1,32 @@
 <!DOCTYPE html>
-<html lang="zh_CN">
+<html lang="zh-CN">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title><%= title %></title>
+        <meta name="description" content="《崩坏3》<%= stageTitle %> 对话文本。" />
+        <meta name="keywords" content="崩坏3,<%= stageTitle %>,对话,剧情" />
+        <meta property="og:title" content="<%= title %> - 《崩坏3》文本" />
+        <meta property="og:description" content="《崩坏3》<%= stageTitle %> 对话文本。" />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content="<%= canonicalUrl %>" />
+        <meta name="twitter:card" content="summary" />
+        <link rel="canonical" href="<%= canonicalUrl %>" />
+        <title><%= title %> - 《崩坏3》文本</title>
         <link rel="stylesheet" href="/r/static/basic.css" />
         <link rel="stylesheet" href="/r/static/style.css" />
         <link rel="stylesheet" href="/r/static/dialogue.css" />
     </head>
     <body>
-        <div>
+        <a class="skip-link" href="#main-content">转到内容</a>
+        <nav class="page-nav" aria-label="页面导航">
             <% if (typeof up === 'string') { %><a class="nav-up" href="<%= up %>">&lt; 返回</a><% } %>
-            <nav class="page-nav">
-                <% if (typeof prev === 'object' && prev) { %><a class="nav-prev" href="<%= prev.url %>">← <%= prev.title %></a><% } else { %> <span></span> <% } %>
-                <% if (typeof next === 'object' && next) { %><a class="nav-next" href="<%= next.url %>"><%= next.title %> →</a><% } else { %> <span></span> <% } %>
-            </nav>
-            <h3><%= stageTitle %></h3>
-            <% if (typeof desc === 'string' && desc) { %>
-            <div class="desc"><%= desc %></div>
-            <% } %>
-            <% dialogs.forEach(function(dlg) { %>
-                <% if (dlg.synopsis) { %>
-                <div class="synopsis"><%= dlg.synopsis %></div>
-                <% } %>
-                <% if (dlg.step) { %>
-                <div class="step"><%= dlg.step %></div>
-                <% } else if (dlg.type === 'CG') { %>
-                <div class="cg">[CG: <%= dlg.cg %>]</div>
-                <% } else { %>
-                    <% dlg.lines.forEach(function(line) { %>
-                    <div class="dialog-line">
-                        <span class="dialog-actor"><%- line.actor %></span><% if (line.actor && line.content) { %><span class="a11y-helper">：</span><% } %><span class="dialog-content"><%- line.content %></span>
-                    </div>
-                    <% }) %>
-                <% } %>
-                <hr />
-            <% }) %>
-            <nav class="page-nav bottom">
-                <% if (typeof prev === 'object' && prev) { %><a class="nav-prev" href="<%= prev.url %>">← <%= prev.title %></a><% } else { %> <span></span> <% } %>
-                <% if (typeof next === 'object' && next) { %><a class="nav-next" href="<%= next.url %>"><%= next.title %> →</a><% } else { %> <span></span> <% } %>
-            </nav>
-        </div>
+            <span class="nav-links">
+                <% if (typeof prev === 'object' && prev) { %><a class="nav-prev" href="<%= prev.url %>" rel="prev">← <%= prev.title %></a><% } %>
+                <% if (typeof next === 'object' && next) { %><a class="nav-next" href="<%= next.url %>" rel="next"><%= next.title %> →</a><% } %>
+            </span>
+        </nav>
+        <main id="main-content"><h1><%= stageTitle %></h1><% if (typeof desc === 'string' && desc) { %><div class="desc"><%= desc %></div><% } %><% dialogs.forEach(function(dlg) { %><% if (dlg.synopsis) { %><div class="synopsis"><a11y-helper type="hideDisplay" aria-label="梗概：">&gt; </a11y-helper><%= dlg.synopsis %></div><% } %><% if (dlg.step) { %><div class="step"><%= dlg.step %></div><% } else if (dlg.type === 'CG') { %><div class="cg"><a11y-helper type="mixedDisplay" content="过场动画：">CG: </a11y-helper><%= dlg.cg %></div><% } else { %><% dlg.lines.forEach(function(line) { %><div class="dialog-line"><% if (line.actor) { %><span class="dialog-actor"><%- line.actor %></span><% } %><% if (line.actor && line.content) { %><a11y-helper type="hideDisplay">：</a11y-helper><% } %><% if (line.content) { %><span class="dialog-content"><%- line.content %></span><% } %></div><% }) %><% } %><hr /><% }) %></main>
+        
+        <script type="module" src="/r/runtime/common.js"></script>
     </body>
 </html>

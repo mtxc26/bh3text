@@ -13,9 +13,13 @@
   "author": "",
   "type": "module",
   "scripts": {
+    "postinstall": "npm run install-all",
+    "install-all": "npm run install-runtime",
+    "install-runtime": "cd runtime && npm ci || npm i",
     "build-submodule": "node build-sub.js",
+    "build-runtime": "cd runtime && npm run build",
     "build-only": "node build.js",
-    "build": "npm run build-submodule && npm run build-only"
+    "build": "npm run build-submodule && npm run build-runtime && npm run build-only"
   },
   "dependencies": {
     "ejs": "^5.0.2",

@@ -3,11 +3,13 @@ import { join, dirname } from 'node:path';
 import ejs from 'ejs';
 import { fileURLToPath } from 'node:url';
 import {
+    SITE_BASE,
     toChapterNumber,
     MARS_STAGE_NUMBER_MAP,
     DOMAIN_LABELS,
     DOMAIN_URL_MAP,
     getErChapters,
+    addAssetRefs,
 } from './util.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -48,7 +50,10 @@ export async function pages() {
         // { name: '便签', url: '/bh3/notes/', desc: '便签与笔记' },
         // { name: '收藏', url: '/bh3/collection/', desc: '收藏品展示' },
     ];
-    await writeFile(join(DIST_DIR, 'index.html'), ejs.render(tplHome, { modules }), 'utf-8');
+    let html;
+    html = ejs.render(tplHome, { modules }, { filename: join(ROOT, 'page/home.ejs') });
+    html = await addAssetRefs(html);
+    await writeFile(join(DIST_DIR, 'index.html'), html, 'utf-8');
     console.log('  Home page generated.');
 
     // ======== 2. Dialog index ========
@@ -84,8 +89,9 @@ export async function pages() {
         sections.push({ label, groups });
     }
     await mkdir(join(DIST_DIR, 'dialog'), { recursive: true });
-    await writeFile(join(DIST_DIR, 'dialog/index.html'),
-        ejs.render(tplDialog, { sections }), 'utf-8');
+    html = ejs.render(tplDialog, { sections }, { filename: join(ROOT, 'page/dialog-index.ejs') });
+    html = await addAssetRefs(html);
+    await writeFile(join(DIST_DIR, 'dialog/index.html'), html, 'utf-8');
     console.log('  Dialog index page generated.');
 
     // ======== 3. Chapter index pages ========
@@ -156,10 +162,12 @@ export async function pages() {
                     }
                 }
 
-                await writeFile(join(outDir, 'index.html'),
-                    ejs.render(tplChapter, {
-                        title: chapterFullLabel(ch), items,
-                    }), 'utf-8');
+                html = ejs.render(tplChapter, {
+                    title: chapterFullLabel(ch), items,
+                    canonicalUrl: SITE_BASE + `/dialog/${urlDir}/${ch.chapter}/`,
+                }, { filename: join(ROOT, 'page/chapter-index.ejs') });
+                html = await addAssetRefs(html);
+                await writeFile(join(outDir, 'index.html'), html, 'utf-8');
             }
         }
     }
@@ -173,10 +181,12 @@ export async function pages() {
             url: `/dialog/er/${ch.chapter}/${encodeURIComponent(s.id)}.html`,
             label: s.id,
         }));
-        await writeFile(join(DIST_DIR, 'dialog', 'er', ch.chapter, 'index.html'),
-            ejs.render(tplChapter, {
-                title: ch.title, items,
-            }), 'utf-8');
+        html = ejs.render(tplChapter, {
+            title: ch.title, items,
+            canonicalUrl: SITE_BASE + `/dialog/er/${ch.chapter}/`,
+        }, { filename: join(ROOT, 'page/chapter-index.ejs') });
+        html = await addAssetRefs(html);
+        await writeFile(join(DIST_DIR, 'dialog', 'er', ch.chapter, 'index.html'), html, 'utf-8');
     }
     console.log('  Er chapter index pages generated.');
 }

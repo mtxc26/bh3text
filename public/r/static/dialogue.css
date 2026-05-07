@@ -1,6 +1,7 @@
-h3 {
+h1 {
     margin: 24px 0 8px 0;
     color: #333;
+    font-size: 1.5em;
 }
 .desc {
     color: #444;
@@ -40,21 +41,24 @@ h3 {
     font-size: 14px;
 }
 .page-nav {
+    position: sticky;
+    top: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 8px 0 16px 0;
+    margin: 0 0 16px 0;
     padding: 8px 0;
     border-bottom: 1px solid #eee;
+    background: #fff;
+    z-index: 10;
     font-size: 14px;
-}
-.page-nav.bottom {
-    border-bottom: none;
-    border-top: 1px solid #eee;
-    margin: 16px 0 8px 0;
 }
 .page-nav a {
     color: #3366cc;
+}
+.nav-links {
+    display: flex;
+    gap: 12px;
 }
 .nav-up {
     flex: 0 0 auto;

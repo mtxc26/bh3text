@@ -1,3 +1,4 @@
 User-agent: *
-Disallow: /api/
+Disallow: /cgi/
+Disallow: /cdn-cgi/
 Sitemap: https://www.bh3text.com/sitemap.xml

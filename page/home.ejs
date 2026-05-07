@@ -1,20 +1,37 @@
 <!DOCTYPE html>
-<html lang="zh_CN">
+<html lang="zh-CN">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>崩坏3 文本</title>
+        <meta name="description" content="《崩坏3》游戏文本存档，浏览主线、往世乐土等对话文本。" />
+        <meta name="keywords" content="崩坏3,Honkai Impact 3rd,文本,对话,剧情,主线,往世乐土" />
+        <meta property="og:title" content="《崩坏3》文本" />
+        <meta property="og:description" content="《崩坏3》游戏文本存档" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.bh3text.com/" />
+        <meta name="twitter:card" content="summary" />
+        <link rel="canonical" href="https://www.bh3text.com/" />
+        <title>《崩坏3》文本</title>
         <link rel="stylesheet" href="/r/static/basic.css" />
         <link rel="stylesheet" href="/r/static/style.css" />
         <link rel="stylesheet" href="/r/static/home.css" />
     </head>
     <body>
-        <h1>崩坏3 文本</h1>
-        <% modules.forEach(function(m) { %>
-        <div class="module">
-            <h3><a href="<%= m.url %>"><%= m.name %></a></h3>
-            <p><%= m.desc %></p>
-        </div>
-        <% }) %>
+        <a class="skip-link" href="#main-content">转到内容</a>
+        <header>
+            <h1>崩坏3 文本</h1>
+        </header>
+        <main id="main-content">
+            <nav aria-label="内容分类">
+                <% modules.forEach(function(m) { %>
+                <section class="module">
+                    <h2><a href="<%= m.url %>"><%= m.name %></a></h2>
+                    <p><%= m.desc %></p>
+                </section>
+                <% }) %>
+            </nav>
+        </main>
+        <%- include('_footer') %>
     </body>
+        <script type="module" src="/r/runtime/common.js"></script>
 </html>

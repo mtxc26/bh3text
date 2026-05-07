@@ -1,20 +1,35 @@
 <!DOCTYPE html>
-<html lang="zh_CN">
+<html lang="zh-CN">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title><%= title %></title>
+        <meta name="description" content="《崩坏3》<%= title %>章节对话索引，浏览该章节全部对话文本。" />
+        <meta name="keywords" content="崩坏3,<%= title %>,对话,章节,剧情" />
+        <meta property="og:title" content="<%= title %> - 《崩坏3》文本" />
+        <meta property="og:description" content="浏览《崩坏3》<%= title %>的对话文本" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="<%= canonicalUrl %>" />
+        <meta name="twitter:card" content="summary" />
+        <link rel="canonical" href="<%= canonicalUrl %>" />
+        <title><%= title %> - 《崩坏3》文本</title>
         <link rel="stylesheet" href="/r/static/basic.css" />
         <link rel="stylesheet" href="/r/static/style.css" />
         <link rel="stylesheet" href="/r/static/chapter-index.css" />
     </head>
     <body>
-        <div class="back"><a href="/dialog/">← 对话文本</a></div>
-        <h1><%= title %></h1>
-        <ul>
-            <% items.forEach(function(item) { %>
-            <li><a href="<%= item.url %>"><%= item.label %></a></li>
-            <% }) %>
-        </ul>
+        <a class="skip-link" href="#main-content">转到内容</a>
+        <nav aria-label="面包屑导航" class="back">
+            <a href="/dialog/">← 对话文本</a>
+        </nav>
+        <main id="main-content">
+            <h1><%= title %></h1>
+            <ul>
+                <% items.forEach(function(item) { %>
+                <li><a href="<%= item.url %>"><%= item.label %></a></li>
+                <% }) %>
+            </ul>
+        </main>
+        <%- include('_footer') %>
     </body>
+        <script type="module" src="/r/runtime/common.js"></script>
 </html>

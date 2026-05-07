@@ -1,0 +1,61 @@
+/* ------ */
+/* Layout */
+
+:root {
+    --link-color: #3366cc;
+}
+
+/* Focus indicator (WCAG 2.4.7) */
+:focus-visible {
+    outline: 2px solid #3366cc;
+    outline-offset: 2px;
+}
+
+/* Skip link (WCAG 2.4.1) */
+.skip-link {
+    display: block;
+    position: fixed;
+    left: 0;
+    top: -20px;
+    width: 0;
+    height: 0;
+    background: blue;
+    color: white;
+    box-sizing: border-box;
+    overflow: hidden;
+    z-index: 1002;
+    padding: 10px;
+}
+.skip-link:focus {
+    top: 0;
+    width: revert;
+    height: revert;
+}
+
+/* ------ */
+/* App specific */
+
+#privacy_consent {
+    text-align: center;
+    font-size: small;
+    margin-top: 2em;
+}
+
+footer#site_footer {
+    color: gray;
+    font-size: 0.6em;
+    padding: 10px;
+    margin-top: 2em;
+    display: flex;
+    gap: 0.5em;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+footer#site_footer #privacy_consent {
+    font-size: inherit;
+    margin-top: 0;
+    display: inline-flex;
+    align-items: center;
+}

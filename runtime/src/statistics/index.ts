@@ -1,0 +1,1 @@
+export { setupStatistics } from './main'
