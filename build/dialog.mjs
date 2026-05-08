@@ -212,7 +212,7 @@ async function buildEr(template) {
                         title: validStages[i + 1].id,
                     }
                     : null,
-            }, { filename: TPL });
+            }, { rmWhitespace: true, filename: TPL });
             html = await addAssetRefs(html);
             await writeFile(join(outDir, `${stage.id}.html`), html, 'utf-8');
             total++;
@@ -302,7 +302,7 @@ export async function dialog() {
                             title: nextTitle,
                         }
                         : null,
-                }, { filename: TPL });
+                }, { rmWhitespace: true, filename: TPL });
                 html = await addAssetRefs(html);
                 await writeFile(join(outDir, filename(pg)), html, 'utf-8');
                 total++;

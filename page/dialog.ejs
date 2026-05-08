@@ -18,14 +18,9 @@
     </head>
     <body>
         <a class="skip-link" href="#main-content">转到内容</a>
-        <nav class="page-nav" aria-label="页面导航">
-            <% if (typeof up === 'string') { %><a class="nav-up" href="<%= up %>">&lt; 返回</a><% } %>
-            <span class="nav-links">
-                <% if (typeof prev === 'object' && prev) { %><a class="nav-prev" href="<%= prev.url %>" rel="prev">← <%= prev.title %></a><% } %>
-                <% if (typeof next === 'object' && next) { %><a class="nav-next" href="<%= next.url %>" rel="next"><%= next.title %> →</a><% } %>
-            </span>
-        </nav>
-        <main id="main-content"><h1><%= stageTitle %></h1><% if (typeof desc === 'string' && desc) { %><div class="desc"><%= desc %></div><% } %><% dialogs.forEach(function(dlg) { %><% if (dlg.synopsis) { %><div class="synopsis"><a11y-helper type="hideDisplay" aria-label="梗概：">&gt; </a11y-helper><%= dlg.synopsis %></div><% } %><% if (dlg.step) { %><div class="step"><%= dlg.step %></div><% } else if (dlg.type === 'CG') { %><div class="cg"><a11y-helper type="mixedDisplay" content="过场动画：">CG: </a11y-helper><%= dlg.cg %></div><% } else { %><% dlg.lines.forEach(function(line) { %><div class="dialog-line"><% if (line.actor) { %><span class="dialog-actor"><%- line.actor %></span><% } %><% if (line.actor && line.content) { %><a11y-helper type="hideDisplay">：</a11y-helper><% } %><% if (line.content) { %><span class="dialog-content"><%- line.content %></span><% } %></div><% }) %><% } %><hr /><% }) %></main>
+        <nav class="page-nav"><% if (typeof up === 'string') { -%><a class="nav-up" href="<%= up %>">&lt; 返回</a><% } -%><span class="nav-links"><% if (typeof prev === 'object' && prev) { -%><a class="nav-prev" href="<%= prev.url %>" rel="prev">← <%= prev.title %></a><% } -%><% if (typeof next === 'object' && next) { -%><a class="nav-next" href="<%= next.url %>" rel="next"><%= next.title %> →</a><% } -%></span></nav>
+        <section id="main-content" aria-labelledby="page-title"><h1 id="page-title"><%= stageTitle %></h1><% if (typeof desc === 'string' && desc) { -%><p class="desc"><%= desc %></p><% } -%></section><% dialogs.forEach(function(dlg) { -%><section class="stage"><% if (dlg.synopsis) { -%><p class="synopsis"><a11y-helper type="hideDisplay" aria-label="梗概：">&gt; </a11y-helper><%= dlg.synopsis %></p><% } -%><% if (dlg.step) { -%><h2 class="step"><%= dlg.step %></h2><% } else if (dlg.type === 'CG') { -%><div class="cg"><a11y-helper type="onlyDisplay" content="【过场动画】">CG: </a11y-helper><%= dlg.cg %></div><% } else { dlg.lines.forEach(function(line) { -%><p class="dialog-line"><% if (line.actor) { -%><span class="dialog-actor"><%- line.actor %></span><% } -%><% if (line.actor && line.content) { -%><a11y-helper type="hideDisplay">：</a11y-helper><% } -%><% if (line.content) { -%><span class="dialog-content"><%- line.content %></span><% } -%></p><% }) } -%></section><% }) -%>
+        <%- include('_footer') %>
         
         <script type="module" src="/r/runtime/common.js"></script>
     </body>

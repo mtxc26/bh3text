@@ -1,26 +1,31 @@
 import { readFileSync, writeFileSync, readdirSync } from 'node:fs'
+import { rename } from 'node:fs/promises'
 import { join } from 'node:path'
-import obfuscator from 'javascript-obfuscator'
+import { execSync } from 'node:child_process'
+//import obfuscator from 'javascript-obfuscator'
 
 const distDir = 'dist'
 const files = readdirSync(distDir).filter(f => f.endsWith('.js'))
 
 for (const file of files) {
+execSync('npx rolldown "dist/' + file + '" --file temp.out.js --minify');
+await rename('temp.out.js','dist/'+file)
+continue
 	const inputPath = join(distDir, file)
 	const code = readFileSync(inputPath, 'utf-8')
 	const result = obfuscator.obfuscate(code, {
 		target: 'browser',
 		seed: 20260507,
-		stringArray: true,
+		stringArray: !true,
 		stringArrayEncoding: ['rc4'],
 		stringArrayThreshold: 1,
-		splitStrings: true,
+		splitStrings: !true,
 		splitStringsChunkLength: 10,
 		compact: true,
 		transformObjectKeys: true,
 		controlFlowFlattening: true,
 		controlFlowFlatteningThreshold: 1,
-		deadCodeInjection: true,
+		deadCodeInjection: !true,
 		sourceMap: true,
 		identifierNamesGenerator: 'mangled-shuffled',
 	})

@@ -18,18 +18,15 @@
     </head>
     <body>
         <a class="skip-link" href="#main-content">转到内容</a>
-        <nav aria-label="面包屑导航" class="back">
-            <a href="/dialog/">← 对话文本</a>
-        </nav>
+        <nav class="back"><a href="/dialog/">← 对话文本</a></nav>
         <main id="main-content">
-            <h1><%= title %></h1>
-            <ul>
-                <% items.forEach(function(item) { %>
-                <li><a href="<%= item.url %>"><%= item.label %></a></li>
-                <% }) %>
-            </ul>
+            <h1><%= title %></h1><% groups.forEach(function(g) { -%>
+            <% if (g.heading) { -%><h2><%= g.heading %></h2><% } -%>
+            <ul><% g.items.forEach(function(item) { -%>
+                <li><a href="<%= item.url %>"><%= item.label %></a></li><% }) -%>
+            </ul><% }) -%>
         </main>
         <%- include('_footer') %>
-    </body>
         <script type="module" src="/r/runtime/common.js"></script>
+    </body>
 </html>

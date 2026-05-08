@@ -3,28 +3,39 @@ h1 {
     color: #333;
     font-size: 1.5em;
 }
-.desc {
-    color: #444;
-    font-size: 14px;
-}
-.synopsis {
-    color: #555;
-    font-size: 14px;
-}
-.step {
+h2.step {
+    margin: 0;
     font-weight: bold;
     font-size: 14px;
 }
-.step::before {
+h2.step::before {
     content: "·";
     margin-right: 0.5em;
 }
+p.desc, p.synopsis, p.dialog-line {
+    margin: 0;
+}
+p.desc {
+    color: #444;
+    font-size: 14px;
+}
+p.synopsis {
+    color: gray;
+    font-size: 14px;
+}
+p.dialog-line {
+    font-size: 14px;
+}
+section.stage + section.stage {
+    margin-top: 0.5em;
+    border-top: 1px solid #ccc;
+    padding-top: 0.5em;
+}
 .cg {
-    margin: 16px 0;
+    margin: 4px 0;
     padding: 8px 14px;
-    background: #fff3cd;
+    background: #f0f0f0;
     border-radius: 4px;
-    color: #856404;
     font-size: 14px;
 }
 .dialog-actor {
@@ -36,9 +47,6 @@ h1 {
 }
 .dialog-content {
     color: #333;
-}
-.dialog-line {
-    font-size: 14px;
 }
 .page-nav {
     position: sticky;

@@ -4,21 +4,35 @@
   "author": "",
   "type": "module",
   "scripts": {
-    "dev": "rolldown -c --watch",
-    "type-check": "tsc --noEmit",
+    "local-process": "node local-process.js",
+    "dev": "vite",
+    "preview": "vite preview",
+    "build-only": "vite build",
+    "type-check": "vue-tsc --build",
     "build": "npm run type-check && npm run build-only && npm run obfuscate",
-    "build-only": "rolldown -c",
     "obfuscate": "node ./obfuscate.js"
   },
   "devDependencies": {
     "@tsconfig/node24": "^24.0.4",
+    "@types/node": "^24.12.2",
+    "@vitejs/plugin-vue": "^6.0.6",
+    "@vue/tsconfig": "^0.9.1",
     "javascript-obfuscator": "^5.4.2",
+    "npm-run-all2": "^8.0.4",
     "rolldown": "^1.0.0",
-    "typescript": "^6.0.3"
+    "ruam": "npm:ruamvm@^2.0.0",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.8",
+    "vite-plugin-css-injected-by-js": "^5.0.1",
+    "vue-tsc": "^3.2.6"
   },
   "dependencies": {
+    "@ant-design/icons-vue": "^7.0.1",
+    "ant-design-vue": "^4.2.6",
     "cookie": "^1.1.1",
-    "lit": "^3.3.2",
-    "vue": "^3.5.34"
+    "fflate": "^0.8.2",
+    "lz-string": "^1.5.0",
+    "vue": "^3.5.34",
+    "vue-dialog-view": "^1.8.4"
   }
 }

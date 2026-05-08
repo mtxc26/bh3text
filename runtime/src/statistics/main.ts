@@ -1,4 +1,4 @@
-import { hasConsent } from '@/cookie_consent'
+import { hasConsent } from '@/consent/cookie'
 
 const PROD_HOST = '.bh3text.com'
 
@@ -8,7 +8,7 @@ function isProd(): boolean {
 }
 
 export async function setupStatistics() {
-	if (!isProd() || !hasConsent('p')) return
+	if (!isProd() || !(await hasConsent('p'))) return
 
 	const script = document.createElement('script')
 	script.defer = true

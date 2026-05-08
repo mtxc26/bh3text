@@ -2,37 +2,76 @@ import { attachCSS } from '@/utils/css';
 import type { ElementRegistryItem } from './types';
 
 const CSS = `
-:host[type="mixedDisplay"], :host[type="hideDisplay"] {
+div {
+    display: inline;
+}
+#onlyDisplay__content {
+    display: none;
+}
+:host {
     display: inline-block;
-    width: 0;
-    height: 0;
+}
+:host([type="hideDisplay"]) #outer_content,
+:host([type="onlyDisplay"]) #outer_content {
+    /* Browsers require a element has nonzero size to be selected */
+    display: inline-block;
+    width: 1px;
+    height: 1px;
+    color: transparent;
     overflow: hidden;
     box-sizing: border-box;
+    user-select: all;
 }
-:host[type="mixedDisplay"], :host[type="onlyDisplay"] {
-    display: inline-block;
+:host([type="onlyDisplay"]) #onlyDisplay__content {
+    display: inline;
 }
-:host[type="mixedDisplay"]::before, :host[type="onlyDisplay"]::before {
-    content: attr(content);
+:host([type="onlyDisplay"]) #onlyDisplay__content::before {
     display: inline-block;
-    width: auto;
+    content: attr(data-content);
 }
 `;
 
 class a11yHelperElement extends HTMLElement {
-    _shadow;
+    _shadow: ShadowRoot;
+
+    static observedAttributes = ['type', 'content'];
+
     constructor() {
         super();
         this._shadow = this.attachShadow({ mode: 'open' });
         attachCSS(CSS, this._shadow);
-        const slot = document.createElement('slot');
-        this._shadow.append(slot);
+
+        const outer = document.createElement('div');
+        outer.id = 'outer_content';
+        outer.append(document.createElement('slot'));
+
+        const onlyDisplay = document.createElement('div');
+        onlyDisplay.id = 'onlyDisplay__content';
+
+        this._shadow.append(outer, onlyDisplay);
+    }
+
+    connectedCallback() {
+        this._updateOnlyDisplay();
+    }
+
+    attributeChangedCallback(name: string, _oldValue: string | null, _newValue: string | null) {
+        if (name === 'content') {
+            this._updateOnlyDisplay();
+        }
+    }
+
+    _updateOnlyDisplay() {
+        const div = this._shadow.getElementById('onlyDisplay__content');
+        if (div) {
+            div.setAttribute('data-content', this.getAttribute('content') || '');
+        }
     }
 }
 
 export default ({
     setup: () => customElements.define('a11y-helper', a11yHelperElement),
     element: a11yHelperElement,
-    tag_name: 'a11y_helper'
+    tag_name: 'a11y-helper'
 }) as const satisfies ElementRegistryItem;
 

@@ -4,6 +4,7 @@ export interface CookieConsent {
 	p: boolean
 	t: boolean
 	ns?: boolean
+	_a?: boolean
 }
 
 export type ConsentCategory = keyof CookieConsent

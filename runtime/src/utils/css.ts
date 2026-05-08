@@ -1,4 +1,4 @@
-export function attachCSS(cssText, owner = document) {
+export function attachCSS(cssText: string, owner: Document | ShadowRoot = document) {
     if (typeof CSSStyleSheet !== 'undefined' &&
         typeof (owner && owner.adoptedStyleSheets && owner.adoptedStyleSheets.push) === 'function') {
         const sheet = new CSSStyleSheet();

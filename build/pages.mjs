@@ -19,6 +19,7 @@ const DATA_DIR = join(ROOT, 'data/dist/app');
 const DIST_DIR = join(ROOT, 'dist');
 const STAGE_ORDER = ['Main', 'Companion', 'Celebrition', 'Branch', 'Entrust'];
 const STAGE_RANK = Object.fromEntries(STAGE_ORDER.map((k, i) => [k.toLowerCase(), i]));
+const CAT_LABEL = { Main: '主线', Companion: '梦间拾集', Celebrition: '巡游庆典', Branch: '支线', Entrust: '委托' };
 
 async function loadJSON(p) {
     return JSON.parse(await readFile(p, 'utf-8'));
@@ -52,7 +53,7 @@ export async function pages() {
         // { name: '收藏', url: '/bh3/collection/', desc: '收藏品展示' },
     ];
     let html;
-    html = ejs.render(tplHome, { modules }, { filename: join(ROOT, 'page/home.ejs') });
+    html = ejs.render(tplHome, { modules }, { rmWhitespace: true, filename: join(ROOT, 'page/home.ejs') });
     html = await addAssetRefs(html);
     await writeFile(join(DIST_DIR, 'index.html'), html, 'utf-8');
     console.log('  Home page generated.');
@@ -90,7 +91,7 @@ export async function pages() {
         sections.push({ label, groups });
     }
     await mkdir(join(DIST_DIR, 'dialog'), { recursive: true });
-    html = ejs.render(tplDialog, { sections }, { filename: join(ROOT, 'page/dialog-index.ejs') });
+    html = ejs.render(tplDialog, { sections }, { rmWhitespace: true, filename: join(ROOT, 'page/dialog-index.ejs') });
     html = await addAssetRefs(html);
     await writeFile(join(DIST_DIR, 'dialog/index.html'), html, 'utf-8');
     console.log('  Dialog index page generated.');
@@ -106,7 +107,6 @@ export async function pages() {
                 const outDir = join(DIST_DIR, 'dialog', urlDir, String(ch.chapter));
 
                 // 从数据文件获取正确顺序，不依赖文件系统排序
-                const items = [];
                 const chDataPath = typeKey === 'main'
                     ? join(DATA_DIR, 'chapters/data', `${ch.chapter}.json`)
                     : join(DATA_DIR, 'chapters/data',
@@ -114,58 +114,66 @@ export async function pages() {
                 let chData;
                 try { chData = await loadJSON(chDataPath); } catch { chData = null; }
 
+                let groups;
                 if (chData) {
                     if (typeKey === 'main') {
-                        // main1: stages 是数组，顺序即正确顺序
+                        // main1: stages 是数组，按 act 分组
+                        groups = [];
                         for (const act of chData.stages || []) {
+                            const groupItems = [];
                             for (const sec of act.data || []) {
-                                items.push({
+                                groupItems.push({
                                     url: `/dialog/${urlDir}/${ch.chapter}/${sec.displayName}`,
                                     label: `${sec.displayName} ${sec.displayTitle || ''}`,
                                 });
                             }
+                            if (groupItems.length)
+                                groups.push({ heading: act.actData?.actName || '', items: groupItems });
                         }
                         // 补充未在 stages 中出现的 content
                         const used = new Set();
                         for (const act of chData.stages || [])
                             for (const sec of act.data || [])
                                 used.add(sec.displayName);
+                        const extraItems = [];
                         for (const ci of chData.content || []) {
-                            if (!used.has(ci.id) && ci.dialogs) {
-                                items.push({
-                                    url: `/dialog/${urlDir}/${ch.chapter}/${ci.id}`,
-                                    label: ci.id,
-                                });
-                            }
+                            if (!used.has(ci.id) && ci.dialogs)
+                                extraItems.push({ url: `/dialog/${urlDir}/${ch.chapter}/${ci.id}`, label: ci.id });
                         }
+                        if (extraItems.length)
+                            groups.push({ heading: '其他', items: extraItems });
                     } else {
-                        // main2: stages 是 dict，按 STAGE_ORDER 遍历
-                        const to = ['Main', 'Companion', 'Celebrition', 'Branch', 'Entrust'];
-                        for (const cat of to) {
+                        // main2: stages 是 dict，按 STAGE_ORDER 分组
+                        groups = [];
+                        for (const cat of STAGE_ORDER) {
                             const stageItems = chData.stages?.[cat];
                             if (!stageItems) continue;
+                            const groupItems = [];
                             let idx = 0;
                             for (const si of stageItems) {
                                 idx++;
                                 const info = si.info || {};
                                 if (!info.id) continue;
-                                // 检查是否有对应的 content
                                 const hasContent = (chData.content || []).some(
                                     ci => ci.series === info.id && ci.dialogs?.length);
                                 if (!hasContent) continue;
-                                items.push({
+                                groupItems.push({
                                     url: `/dialog/${urlDir}/${ch.chapter}/${cat.toLowerCase()}${idx}`,
                                     label: info.Title || `${cat}${idx}`,
                                 });
                             }
+                            if (groupItems.length)
+                                groups.push({ heading: CAT_LABEL[cat] || cat, items: groupItems });
                         }
                     }
+                } else {
+                    groups = [];
                 }
 
                 html = ejs.render(tplChapter, {
-                    title: chapterFullLabel(ch), items,
+                    title: chapterFullLabel(ch), groups,
                     canonicalUrl: SITE_BASE + `/dialog/${urlDir}/${ch.chapter}/`,
-                }, { filename: join(ROOT, 'page/chapter-index.ejs') });
+                }, { rmWhitespace: true, filename: join(ROOT, 'page/chapter-index.ejs') });
                 html = await addAssetRefs(html);
                 await writeFile(join(outDir, 'index.html'), html, 'utf-8');
             }
@@ -182,9 +190,9 @@ export async function pages() {
             label: s.id,
         }));
         html = ejs.render(tplChapter, {
-            title: ch.title, items,
+            title: ch.title, groups: [{ heading: '', items }],
             canonicalUrl: SITE_BASE + `/dialog/er/${ch.chapter}/`,
-        }, { filename: join(ROOT, 'page/chapter-index.ejs') });
+        }, { rmWhitespace: true, filename: join(ROOT, 'page/chapter-index.ejs') });
         html = await addAssetRefs(html);
         await writeFile(join(DIST_DIR, 'dialog', 'er', ch.chapter, 'index.html'), html, 'utf-8');
     }
