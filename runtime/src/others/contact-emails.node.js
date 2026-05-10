@@ -1,3 +1,6 @@
+//this is the algorithm backup in local-private/
+// real email is not in the repo
+
 import { spawnSync } from 'node:child_process'
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -12,7 +15,7 @@ import base64, sys, io
 
 font = ImageFont.truetype('/system/fonts/DroidSansMono.ttf', 16)
 text = ${JSON.stringify(email)}
-pad = 0
+pad = 1
 
 tmp = Image.new('RGBA', (1, 1))
 d = ImageDraw.Draw(tmp)
@@ -32,12 +35,10 @@ sys.stdout.write(base64.b64encode(buf.getvalue()).decode('ascii'))
     return `data:image/png;base64,${r.stdout.trim()}`
 }
 
-const contactB64   = renderEmail('')
+const contactB64   = renderEmail('youremail')
 const copyrightB64 = renderEmail('youremail')
 
-// 用 JSON.stringify 把 base64 数据嵌入，混淆后不会留下明文字符串
-let out = `// @virtualize
-function GetContactEmail(type) {
+let out = `function GetContactEmail(type) {
     if (!type) return null
     var _img = {
         contact:   ${JSON.stringify(contactB64)},
@@ -48,12 +49,22 @@ function GetContactEmail(type) {
 
 callback(GetContactEmail)`;
 
-out = (obfuscateCode(out, { preset: "max", debugProtection: false }));
+out = (obfuscateCode(out, { preset: "medium", debugProtection: false }));//max is too heavy&slow
 
 out = `// @ts-nocheck
-const GetContactEmail = await new Promise(function anonymous(callback) {
+const data = await new Promise(function anonymous(callback) {
+if((function(){var R_=new Uint8Array(8),Rp=crypto.getRandomValues(R_),PJ=Math.floor(Math.log(R_[1]+R_.length)/Math.log((Math.floor(Math.random())+1+R_[3])*980))+2,PQ=crypto.randomUUID().replace({[Symbol.replace](s,r){return(Object.setPrototypeOf(r,new Number(PJ)),(/[^-]/g)[Symbol.replace](s,new String))}},new Array).length,To={get _(){return String.fromCodePoint(Math.floor((Object.keys(Object.getOwnPropertyDescriptors(Array)).length % (Reflect.ownKeys(Object.create(To)).length + 2)) / 100) + 108)},get a(){return 'imu'}},La=new Proxy(Math,{get(...PQ){return ((Reflect.set(Reflect.ownKeys(PQ),String(PQ.length))), Reflect.get(...PQ))}}),I=La[atob('cG93')](PJ,PQ);return (La[To.a+To._](I^PJ,0x45d9f3b)+PQ&0xff)<42}()))console.log('crawler, hacker, or AI, dont try to deobfuscate anymore; this is vm obfuscator');
 ${out}
 });
+const GetContactEmail = function f(v) {
+    const _c = f.c ?? new Map;
+    const h = _c.get(v);
+    if (h) return h;
+    const r = data(v);
+    _c.set(v, r);
+    f.c = _c;
+    return r;
+}
 
 export default GetContactEmail;
 `;
