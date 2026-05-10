@@ -1,12 +1,15 @@
 import { vm } from '@/app'
-import svg from '@/resources/privacyoptions.svg?no-inline'
+import svg from '@/resources/privacyoptions.svg?raw'
 
-function buildIcon(): HTMLElement {
-    const el = document.createElement('img')
-    el.src = svg;
-    el.alt = 'California Consumer Privacy Act (CCPA) Opt-Out Icon';
-    el.height = 14;
-	return el
+function buildIcon(): Element {
+	const parser = new DOMParser()
+	const doc = parser.parseFromString(svg, 'image/svg+xml')
+	const svgEl = doc.querySelector('svg')!
+	svgEl.setAttribute('aria-label', 'California Consumer Privacy Act (CCPA) Opt-Out Icon')
+	svgEl.setAttribute('role', 'img')
+	svgEl.removeAttribute('id')
+	svgEl.setAttribute('style', 'margin: auto; height: 1.2em;')
+	return svgEl
 }
 
 function createPrivacyLink(text: string) {
@@ -29,6 +32,7 @@ export async function setupPrivacyLinks() {
 	privacy.style.display = 'inline-flex'
 	privacy.style.alignItems = 'center'
 	privacy.style.gap = '6px'
+	privacy.style.whiteSpace = 'nowrap'
 	privacy.insertBefore(buildIcon(), privacy.firstChild)
 
 	el.append(privacy)
