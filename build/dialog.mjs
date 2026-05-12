@@ -2,7 +2,7 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import ejs from 'ejs';
 import { fileURLToPath } from 'node:url';
-import { SITE_BASE, addAssetRefs } from './util.mjs';
+import { SITE_BASE, addAssetRefs, toChapterNumber, DOMAIN_LABELS } from './util.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -24,12 +24,21 @@ async function renderPages(template, category, urlDir) {
     await mkdir(outDir, { recursive: true });
 
     const urlParts = pg.u.split('/');
-    const fname = urlParts[urlParts.length - 1];
+    const fname = decodeURIComponent(urlParts[urlParts.length - 1]);
+
+    const categoryLabel = category === 'er' ? '往世乐土'
+      : category === 'main1' ? (DOMAIN_LABELS.main || '主线第一部')
+      : (DOMAIN_LABELS.main2 || '主线第二部');
+    const chapterNum = category === 'er' ? '' : toChapterNumber(pg.c);
+    const hierarchyTitle = [categoryLabel, chapterNum, pg.pt].filter(Boolean).join(' ');
+    const hierarchyTitleNoSpace = [categoryLabel, chapterNum, ' ' + pg.pt].filter(Boolean).join('');
 
     const canonicalUrl = SITE_BASE + pg.u;
     const html = ejs.render(template, {
       title: pg.pt,
       stageTitle: pg.pt,
+      hierarchyTitle,
+      hierarchyTitleNoSpace,
       canonicalUrl,
       desc: pg.desc || '',
       dialogs: pg.blocks,
