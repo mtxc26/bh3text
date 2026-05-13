@@ -1,7 +1,7 @@
-import { attachCSS } from '@/utils/css';
+import { createCSS } from 'add-css-constructed';
 import type { ElementRegistryItem } from './types';
 
-const CSS = `
+const CSS = createCSS(`
 div {
     display: inline;
 }
@@ -29,7 +29,7 @@ div {
     display: inline-block;
     content: attr(data-content);
 }
-`;
+`);
 
 class a11yHelperElement extends HTMLElement {
     _shadow: ShadowRoot;
@@ -39,7 +39,7 @@ class a11yHelperElement extends HTMLElement {
     constructor() {
         super();
         this._shadow = this.attachShadow({ mode: 'open' });
-        attachCSS(CSS, this._shadow);
+        CSS.attach(this._shadow);
 
         const outer = document.createElement('div');
         outer.id = 'outer_content';

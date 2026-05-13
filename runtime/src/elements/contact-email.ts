@@ -1,8 +1,8 @@
 import GetContactEmail from '@/local-private-dist/contact-emails.js'
-import { attachCSS } from '@/utils/css'
+import { createCSS } from 'add-css-constructed'
 import type { ElementRegistryItem } from './types'
 
-const CSS = `:host { display: inline-block }`
+const CSS = createCSS(`:host { display: inline-block }`);
 
 class ContactEmailElement extends HTMLElement {
 	static observedAttributes = ['type']
@@ -13,7 +13,7 @@ class ContactEmailElement extends HTMLElement {
 	constructor() {
 		super()
 		this._shadow = this.attachShadow({ mode: 'open' })
-		attachCSS(CSS, this._shadow)
+		CSS.attach(this._shadow);
 	}
 
 	connectedCallback() {

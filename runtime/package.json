@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
+    "add-css-constructed": "^2.0.0",
     "ant-design-vue": "^4.2.6",
     "cookie": "^1.1.1",
     "fflate": "^0.8.2",
