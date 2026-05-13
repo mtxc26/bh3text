@@ -59,3 +59,8 @@ footer#site_footer #privacy_consent {
     display: inline-flex;
     align-items: center;
 }
+
+::highlight(page-hash-highlight) {
+    background: #fff3a3;
+    color: inherit;
+}
