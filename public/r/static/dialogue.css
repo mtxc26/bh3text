@@ -12,6 +12,9 @@ h2.step::before {
     content: "·";
     margin-right: 0.5em;
 }
+p {
+    white-space: pre;
+}
 p.desc, p.synopsis, p.dialog-line {
     margin: 0;
 }
@@ -26,7 +29,7 @@ p.synopsis {
 p.dialog-line {
     font-size: 14px;
 }
-section.stage + section.stage {
+section.stage {
     margin-top: 0.5em;
     border-top: 1px solid #ccc;
     padding-top: 0.5em;

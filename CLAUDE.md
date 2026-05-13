@@ -2,95 +2,76 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project overview
+## Project
 
-Static site generator for [bh3text.com](https://www.bh3text.com/) — a browsable archive of Honkai Impact 3rd dialogue/text content in Chinese.
+[bh3text.com](https://www.bh3text.com/) — a static site that archives Honkai Impact 3rd game dialogue text. Chinese-language content. Deployed on Cloudflare Pages (`wrangler.jsonc`).
 
-## Commands
+**ABSOLUTELY FORBIDDEN** TO：
+- SORT ANY INDEX OR CONTENT
+- REMOVE ANY WORKING CODE WITHOUT USER PERMISSION
+- WRITE SHITTY AND UNMAINTAINABLE CODE
+- WRITE INLINE <STYLE> BLOCK INTO HTML FILES
+- WRITE INLINE JAVASCRIPT LIKE `<a onclick=……>`
+- WRITE BAD-ACCESSIBILITY HTML OR OMIT `autocomplete` ATTRIBUTE ON FORM ELEMENTS
+OR **YOU WILL BE IMMEDIATELY KILLED**
+
+## Build & Develop
 
 ```bash
-npm run build              # Full build: submodule data + site
-npm run build-submodule    # Build only the data submodule (data/)
-npm run build-only         # Build only the site from pre-built data
+npm run build          # Full build: data submodule → runtime → static pages
+npm run build-submodule  # Build only the data/ submodule
+npm run build-only     # Build only the static HTML pages (build/index.mjs)
 ```
 
-There are no tests or linters. Formatting is handled by Prettier (config in `.prettierrc`: tabs=4, single quotes, trailing commas, print width 100).
+**Runtime (Vue app):**
+```bash
+cd runtime
+npm run dev            # Vite dev server
+npm run build          # Type-check + Vite build + obfuscate
+npm run type-check     # vue-tsc --build
+npm run obfuscate      # Minify dist JS via rolldown
+```
+
+**Formatting:** Prettier with tabs=4, single quotes, semicolons, printWidth=100 (see `.prettierrc`).
 
 ## Architecture
 
-### Two-repo structure
+The site is generated in three stages:
 
-The `data/` directory is a **git submodule** (repo `bh3text-data`). It has its own `build.js` that processes raw JSON game data into `data/dist/`. The main build calls the submodule build first, then consumes the output.
+### 1. Data submodule (`data/`)
+Git submodule ([bh3text-data](https://github.com/mtxc26/bh3text-data)). Contains raw game dialogue. Its `build.js` processes raw data into `data/dist/` with:
+- `data/dist/app/index/` — chapter indexes (main.json, main2.json)
+- `data/dist/app/chapters/data/` — per-chapter stage/content data
+- `data/dist/pages/` — flattened page descriptors (er.json, main1.json, main2.json) used by dialog page generation
+- `data/dist/basic/basic.js` — game constants, evaluates to `GameRogueData`
 
-### Build pipeline (ESM, `build/`)
+### 2. Static page build (`build/`)
+Node.js ESM scripts that generate HTML from EJS templates:
 
-All build code is ESM (Node.js `"type": "module"`). The orchestration is linear:
+| Script | What it produces |
+|---|---|
+| `prepare.mjs` | Clears `dist/`, copies `runtime/dist/` → `dist/r/runtime/`, copies `public/` → `dist/` |
+| `dialog.mjs` | Individual dialog pages (`dist/dialog/{er,mainline/1,mainline/2}/...`) from `data/dist/pages/` |
+| `pages.mjs` | Homepage, dialog index, chapter index pages from `data/dist/app/` |
+| `sitemap.mjs` | `sitemap.xml` by walking `dist/` for `.html` files |
 
-1. **`build/index.mjs`** — entry point; calls prepare → dialog → pages → sitemap in sequence
-2. **`build/prepare.mjs`** — wipes `dist/` contents (preserving the directory itself to avoid breaking CWD for any process inside it), then creates output subdirectories and copies static assets: `page/r/` → `dist/r/`, `public/` → `dist/`
-3. **`build/dialog.mjs`** — generates every individual dialog HTML page. Handles three distinct data shapes:
-   - **Main1** (`main.json`): stages are arrays, one page per stage section
-   - **Main2** (`main2.json`): stages are dicts keyed by type (Main/Companion/Celebrition/Branch/Entrust), content matched by `series` field
-   - **ER** (Elysian Realm): special handling — loads `data/dist/dialog/data/er/{chapter}.json` and `data/dist/dialog/index/er.json`
-   - Dialog text runs through `procText()` for color tags, ruby annotations, and placeholder substitution (nicknames)
-   - Pages get prev/next navigation and breadcrumb "up" links
-4. **`build/pages.mjs`** — generates three kinds of index pages:
-   - Home page (`dist/index.html`) — module listing
-   - Dialog index (`dist/dialog/index.html`) — arc/chapter listing for main1+main2, with ER inserted at the right position
-   - Chapter index pages — per-chapter listing of all dialog sections
-5. **`build/sitemap.mjs`** — walks `dist/` for `.html` files, generates `sitemap.xml` with `https://www.bh3text.com` as base
-6. **`build/util.mjs`** — shared helpers: Chinese numeral conversion (`toCnText`/`toChapterNumber`), domain label/URL maps, ER chapter loader (evaluates `data/dist/basic/basic.js` which is a self-executing JS data file), text markup processor (`procText`)
+Key domain constants live in `build/util.mjs`: `DOMAIN_LABELS`, `DOMAIN_URL_MAP`, `SITE_BASE`, Chinese number conversion, text markup processing (color tags, ruby annotations, nickname placeholders), and SHA256-based asset cache busting (`addAssetRefs`).
 
-### Templates (`page/`)
+EJS templates are in `page/` and use `<%- include('_footer') %>` for the shared footer.
 
-EJS templates rendered at build time:
-- `_footer.ejs` — shared footer partial included by other templates
-- `home.ejs` — site homepage
-- `dialog.ejs` — individual dialog page (the core template; handles step blocks, dialog lines with actors/content, CG blocks)
-- `dialog-index.ejs` — dialog domain index with grouped chapter listing
-- `chapter-index.ejs` — per-chapter section listing
+### 3. Runtime app (`runtime/`)
+Vue 3 + TypeScript app built as a Vite library (ES format). Entry: `src/bootstrap/common.ts` → `src/main.ts` → sets up app, cookie consent, privacy links, custom elements, and statistics.
 
-### Static files (`public/`)
+The Vue app mounts into a Shadow DOM on all generated pages. It provides:
+- **Cookie consent** (`src/consent/`) — reads/writes `cookie_consent` cookie, country-aware (CN users auto-consent). Gating via `_setInit`/`_waitInit` pattern so no consent-dependent logic runs before initialization.
+- **Privacy consent center** — Ant Design Vue dialogs for GDPR/CCPA (`CookieConsentDialog`, `DoNotSellDialog`, `PrivacyConsentCenter`)
+- **Custom elements** (`src/elements/`) — `<a11y-helper>` for accessibility, `<contact-email>` for obfuscated emails
+- **Local-private** (`src/local-private/`) — scripts run during local dev to generate obfuscated contact emails. `local-process.js` runs these Node scripts and obfuscates the output.
 
-Files copied as-is to `dist/`: `robots.txt`, etc.
+Post-build, `obfuscate.js` runs rolldown to minify the JS bundle (original obfuscator code is commented out in favor of rolldown for speed).
 
-### Static assets (`page/r/static/`)
+### Static assets (`public/`)
+Deployed verbatim to `dist/`: CSS files in `public/r/static/`, PWA icons in `public/r/assets/`, 404 page JS in `public/r/client/404page.js`, `robots.txt`, `about/`, `favicon.ico`.
 
-CSS files: `basic.css`, `style.css`, `home.css`, `dialog-index.css`, `chapter-index.css`, `dialogue.css`.
-
-### Data domains
-
-The site organizes dialog into these domains (see `DOMAIN_LABELS` and `DOMAIN_URL_MAP` in `build/util.mjs`):
-
-| Key    | Label          | URL path         |
-|--------|----------------|------------------|
-| main   | 主线第一部      | /dialog/mainline/1/ |
-| main2  | 主线第二部      | /dialog/mainline/2/ |
-| er     | 往世乐土       | /dialog/er/       |
-| ow     | 开放世界       | /dialog/ow/       |
-| ex     | 编年史         | /dialog/ex/       |
-| novel  | 小说           | /dialog/novel/    |
-
-Currently only `main`, `main2`, and `er` are actively generated. The other domains (`ow`, `ex`, `novel`) exist in the constants but have no build logic wired up.
-
-### Output structure (`dist/`)
-
-```
-dist/
-  index.html              # Home page
-  robots.txt
-  sitemap.xml
-  r/static/*.css          # Static assets
-  dialog/
-    index.html            # Dialog domain index
-    er/{chapter}/{id}.html
-    er/{chapter}/index.html
-    mainline/1/{chapter}/{id}.html
-    mainline/1/{chapter}/index.html
-    mainline/2/{chapter}/{stage_type}{n}.html
-    mainline/2/{chapter}/index.html
-```
-
-## Git submodule
-
-`data/` is a submodule pointing to `https://github.com/mtxc26/bh3text-data`. After cloning, run `git submodule update --init`. The submodule has its own Node.js build that must be run before the main build can consume its output.
+### Output (`dist/`)
+The final static site. Cloudflare Pages serves this via `wrangler.jsonc` with `not_found_handling: "404-page"`.

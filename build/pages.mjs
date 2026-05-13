@@ -98,16 +98,34 @@ export async function pages() {
     console.log('  Dialog index page generated.');
 
     // ======== 3. Chapter index pages ========
+    // 加载 pages JSON 作为页面是否存在的权威来源
+    const pagesMain1 = await loadJSON(join(ROOT, 'data/dist/pages/main1.json'));
+    const pagesMain2 = await loadJSON(join(ROOT, 'data/dist/pages/main2.json'));
+
+    // 构建 chapter -> Set<pageId> 映射 (pageId 已 URL 解码)
+    function buildValidPages(pagesList) {
+        const map = new Map();
+        for (const pg of pagesList) {
+            const c = pg.c;
+            if (!map.has(c)) map.set(c, new Set());
+            const lastSeg = pg.u.split('/').pop();
+            map.get(c).add(decodeURIComponent(lastSeg));
+        }
+        return map;
+    }
+    const validMain1 = buildValidPages(pagesMain1);
+    const validMain2 = buildValidPages(pagesMain2);
+
     for (const [typeKey, urlDir] of Object.entries(DOMAIN_URL_MAP)) {
         if (typeKey !== 'main' && typeKey !== 'main2') continue;
         const fn = typeKey === 'main' ? 'main.json' : 'main2.json';
         const idx = await loadJSON(join(DATA_DIR, 'index', fn));
+        const validPages = typeKey === 'main' ? validMain1 : validMain2;
 
         for (const [arcName, chapters] of Object.entries(idx)) {
             for (const ch of chapters) {
                 const outDir = join(DIST_DIR, 'dialog', urlDir, String(ch.chapter));
 
-                // 从数据文件获取正确顺序，不依赖文件系统排序
                 const chDataPath = typeKey === 'main'
                     ? join(DATA_DIR, 'chapters/data', `${ch.chapter}.json`)
                     : join(DATA_DIR, 'chapters/data',
@@ -115,57 +133,69 @@ export async function pages() {
                 let chData;
                 try { chData = await loadJSON(chDataPath); } catch { chData = null; }
 
+                const vp = validPages.get(String(ch.chapter)) || new Set();
+
                 let groups;
-                if (chData) {
+                if (chData && vp.size > 0) {
                     if (typeKey === 'main') {
                         // main1: stages 是数组，按 act 分组
                         groups = [];
+                        const used = new Set();
                         for (const act of chData.stages || []) {
                             const groupItems = [];
                             for (const sec of act.data || []) {
+                                // 跳过 displayName 为空的条目，且必须确认页面实际存在
+                                if (!sec.displayName) continue;
+                                if (!vp.has(sec.displayName)) continue;
+                                used.add(sec.displayName);
                                 groupItems.push({
-                                    url: `/dialog/${urlDir}/${ch.chapter}/${sec.displayName}`,
+                                    url: `/dialog/${urlDir}/${ch.chapter}/${encodeURIComponent(sec.displayName)}`,
                                     label: `${sec.displayName} ${sec.displayTitle || ''}`,
                                 });
                             }
                             if (groupItems.length)
                                 groups.push({ heading: act.actData?.actName || '', items: groupItems });
                         }
-                        // 补充未在 stages 中出现的 content
-                        const used = new Set();
-                        for (const act of chData.stages || [])
-                            for (const sec of act.data || [])
-                                used.add(sec.displayName);
+                        // 补充 pages JSON 中有但未被 stages 覆盖的页面
                         const extraItems = [];
-                        for (const ci of chData.content || []) {
-                            if (!used.has(ci.id) && ci.dialogs)
-                                extraItems.push({ url: `/dialog/${urlDir}/${ch.chapter}/${ci.id}`, label: ci.id });
+                        for (const pid of vp) {
+                            if (!used.has(pid))
+                                extraItems.push({ url: `/dialog/${urlDir}/${ch.chapter}/${encodeURIComponent(pid)}`, label: pid });
                         }
-                        if (extraItems.length)
-                            groups.push({ heading: '其他', items: extraItems });
+                                                if (extraItems.length)
+                            groups.push({ heading: groups.length === 0 ? '' : '其他', items: extraItems });
                     } else {
                         // main2: stages 是 dict，按 STAGE_ORDER 分组
                         groups = [];
+                        const used = new Set();
                         for (const cat of STAGE_ORDER) {
                             const stageItems = chData.stages?.[cat];
                             if (!stageItems) continue;
                             const groupItems = [];
-                            let idx = 0;
+                            let catIdx = 0;
                             for (const si of stageItems) {
-                                idx++;
+                                catIdx++;
                                 const info = si.info || {};
                                 if (!info.id) continue;
-                                const hasContent = (chData.content || []).some(
-                                    ci => ci.series === info.id && ci.dialogs?.length);
-                                if (!hasContent) continue;
+                                const expectedId = `${cat.toLowerCase()}${catIdx}`;
+                                if (!vp.has(expectedId)) continue;
+                                used.add(expectedId);
                                 groupItems.push({
-                                    url: `/dialog/${urlDir}/${ch.chapter}/${cat.toLowerCase()}${idx}`,
-                                    label: info.Title || `${cat}${idx}`,
+                                    url: `/dialog/${urlDir}/${ch.chapter}/${expectedId}`,
+                                    label: info.Title || expectedId,
                                 });
                             }
                             if (groupItems.length)
                                 groups.push({ heading: CAT_LABEL[cat] || cat, items: groupItems });
                         }
+                        // 补充未覆盖的页面
+                        const extraItems = [];
+                        for (const pid of vp) {
+                            if (!used.has(pid))
+                                extraItems.push({ url: `/dialog/${urlDir}/${ch.chapter}/${encodeURIComponent(pid)}`, label: pid });
+                                                }
+                        if (extraItems.length)
+                            groups.push({ heading: groups.length === 0 ? '' : '其他', items: extraItems });
                     }
                 } else {
                     groups = [];
