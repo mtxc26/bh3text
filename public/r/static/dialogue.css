@@ -76,3 +76,6 @@ section.stage {
 .nav-up {
     flex: 0 0 auto;
 }
+[id] {
+    scroll-margin-top: calc(1em + 14px + 10px);
+}
