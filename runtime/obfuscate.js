@@ -8,8 +8,8 @@ const distDir = 'dist'
 const files = readdirSync(distDir).filter(f => f.endsWith('.js'))
 
 for (const file of files) {
-execSync('npx rolldown "dist/' + file + '" --file temp.out.js --minify');
-await rename('temp.out.js','dist/'+file)
+//execSync('npx rolldown "dist/' + file + '" --file temp.out.js --minify');
+//await rename('temp.out.js','dist/'+file)
 continue
 	const inputPath = join(distDir, file)
 	const code = readFileSync(inputPath, 'utf-8')

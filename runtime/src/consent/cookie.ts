@@ -1,4 +1,4 @@
-import { vm } from '@/app'
+import { runtime_vm as vm } from '@/app'
 import { readConsent, writeConsent, renewConsent, _setInit } from './manager'
 import { getUserCountry } from '@/utils/usercountry'
 import type { CookieConsent } from './types'

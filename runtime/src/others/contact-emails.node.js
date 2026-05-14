@@ -5,6 +5,7 @@ import { spawnSync } from 'node:child_process'
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { obfuscateCode } from "ruam";
+import obfuscator from 'javascript-obfuscator'
 
 const DIST_DIR = 'src/local-private-dist/'
 
@@ -49,7 +50,22 @@ let out = `function GetContactEmail(type) {
 
 callback(GetContactEmail)`;
 
-out = (obfuscateCode(out, { preset: "medium", debugProtection: false }));//max is too heavy&slow
+out = (obfuscateCode(obfuscator.obfuscate(out, {
+	target: 'browser',
+	seed: 20260514,
+	stringArray: true,
+	stringArrayEncoding: ['base64'],
+	stringArrayThreshold: 0.3,//1,
+	splitStrings: true,
+	splitStringsChunkLength: 10,
+	compact: true,
+	transformObjectKeys: false,
+	controlFlowFlattening: !true,
+	controlFlowFlatteningThreshold: 1,
+	deadCodeInjection: !true,
+	sourceMap: false,
+	identifierNamesGenerator: 'mangled-shuffled',
+}).getObfuscatedCode(), { preset: "max", debugProtection: false }));
 
 out = `// @ts-nocheck
 const data = await new Promise(function anonymous(callback) {

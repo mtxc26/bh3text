@@ -20,14 +20,11 @@ div {
     color: transparent;
     overflow: hidden;
     box-sizing: border-box;
-    user-select: all;
+    user-select: text;
 }
 :host([type="onlyDisplay"]) #onlyDisplay__content {
     display: inline;
-}
-:host([type="onlyDisplay"]) #onlyDisplay__content::before {
-    display: inline-block;
-    content: attr(data-content);
+    user-select: none;
 }
 `);
 
@@ -64,7 +61,7 @@ class a11yHelperElement extends HTMLElement {
     _updateOnlyDisplay() {
         const div = this._shadow.getElementById('onlyDisplay__content');
         if (div) {
-            div.setAttribute('data-content', this.getAttribute('content') || '');
+            div.innerHTML = (this.getAttribute('content') || '');
         }
     }
 }

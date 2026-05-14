@@ -1,4 +1,5 @@
 import { fileURLToPath, URL } from 'node:url'
+import { resolve } from 'node:path'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
@@ -19,14 +20,19 @@ export default defineConfig({
     'process.env.NODE_ENV': JSON.stringify('production'),
   },
   build: {
-    lib: {
-      entry: {
-        common: 'src/bootstrap/common.ts',
+    rolldownOptions: {
+      input: {
+        common: resolve(fileURLToPath(new URL('./', import.meta.url)), './src/bootstrap/common.ts'),
       },
-      formats: ['es'],
+      output: {
+        entryFileNames: '[name].js',
+        chunkFileNames: 'staticassets/[name]-[hash].js',
+        assetFileNames: 'staticassets/[name]-[hash][extname]',
+      },
     },
     sourcemap: false,
-    emptyOutDir: false,
+    emptyOutDir: true,
+    minify: true,
   },
   base: './',
 })

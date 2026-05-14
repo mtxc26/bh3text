@@ -1,4 +1,4 @@
-import { vm } from '@/app'
+import { runtime_vm as vm } from '@/app'
 import svg from '@/resources/privacyoptions.svg?raw'
 
 function buildIcon(): Element {

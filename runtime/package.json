@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
-    "build": "npm run type-check && npm run build-only && npm run obfuscate",
+    "build": "run-p type-check \"build-only {@}\" -- && npm run obfuscate",
     "obfuscate": "node ./obfuscate.js"
   },
   "devDependencies": {
@@ -33,7 +33,9 @@
     "cookie": "^1.1.1",
     "fflate": "^0.8.2",
     "lz-string": "^1.5.0",
+    "pinia": "^3.0.4",
     "vue": "^3.5.34",
-    "vue-dialog-view": "^1.8.4"
+    "vue-dialog-view": "^1.8.4",
+    "vue-router": "^5.0.7"
   }
 }
