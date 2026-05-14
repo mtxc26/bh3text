@@ -21,7 +21,8 @@ async function* walk(dir, base = '') {
 export async function sitemap() {
     const links = [];
     for await (const url of walk(DIST)) {
-        const clean = url.endsWith('/index.html') ? url.slice(0, -10) : url;
+        let clean = url.replace(/\.html$/, '');
+        if (clean.endsWith('/index')) clean = clean.slice(0, -5);
         links.push({ url: clean, });
     }
 
