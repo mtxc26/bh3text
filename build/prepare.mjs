@@ -20,7 +20,7 @@ export async function prepare() {
         await mkdir('dist', { recursive: true });
     }
     for (const d of OUT_DIRS) await mkdir(d, { recursive: true });
-    await cp('runtime/dist', 'dist/r/runtime', { recursive: true });
+    await cp('runtime/dist', 'dist/_r/runtime', { recursive: true });
     await cp('public', 'dist', { recursive: true });
     console.log('dist prepared.');
 }

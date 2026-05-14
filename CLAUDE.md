@@ -50,7 +50,7 @@ Node.js ESM scripts that generate HTML from EJS templates:
 
 | Script | What it produces |
 |---|---|
-| `prepare.mjs` | Clears `dist/`, copies `runtime/dist/` → `dist/r/runtime/`, copies `public/` → `dist/` |
+| `prepare.mjs` | Clears `dist/`, copies `runtime/dist/` → `dist/_r/runtime/`, copies `public/` → `dist/` |
 | `dialog.mjs` | Individual dialog pages (`dist/dialog/{er,mainline/1,mainline/2}/...`) from `data/dist/pages/` |
 | `pages.mjs` | Homepage, dialog index, chapter index pages from `data/dist/app/` |
 | `sitemap.mjs` | `sitemap.xml` by walking `dist/` for `.html` files |
@@ -71,7 +71,7 @@ The Vue app mounts into a Shadow DOM on all generated pages. It provides:
 Post-build, `obfuscate.js` runs rolldown to minify the JS bundle (original obfuscator code is commented out in favor of rolldown for speed).
 
 ### Static assets (`public/`)
-Deployed verbatim to `dist/`: CSS files in `public/r/static/`, PWA icons in `public/r/assets/`, 404 page JS in `public/r/client/404page.js`, `robots.txt`, `about/`, `favicon.ico`.
+Deployed verbatim to `dist/`: CSS files in `public/_r/static/`, PWA icons in `public/_r/assets/`, 404 page JS in `public/_r/client/404page.js`, `robots.txt`, `about/`, `favicon.ico`.
 
 ### Output (`dist/`)
 The final static site. Cloudflare Pages serves this via `wrangler.jsonc` with `not_found_handling: "404-page"`.

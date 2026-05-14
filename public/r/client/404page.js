@@ -1,1 +1,0 @@
-(function(){function a(i){return document.getElementById(i)}var b=a('back'),c=a('back_c');b.onclick=function(e){e.preventDefault();history.back();return false};if(typeof navigation<'u'&&navigation&&navigation.canGoBack===false)c.remove()}())
