@@ -50,7 +50,7 @@ const _refCache = new Map();
 
 export async function addAssetRefs(html) {
     const ROOT = join(__dirname, '..');
-    const re = /(href|src)="(\/r\/[^"]+)"/g;
+    const re = /(href|src)="(\/_r\/[^"]+)"/g;
     const matches = [...html.matchAll(re)];
     const urls = [...new Set(matches.map(m => m[2]))];
 
