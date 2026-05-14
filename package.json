@@ -19,13 +19,15 @@
     "build-submodule": "node build-sub.js",
     "build-runtime": "cd runtime && npm run build",
     "build-only": "node build.js",
-    "build": "npm run build-submodule && npm run build-runtime && npm run build-only"
+    "build": "npm run build-submodule && npm run build-runtime && npm run build-only",
+    "dev": "node dev.js"
   },
   "dependencies": {
     "ejs": "^5.0.2",
     "sitemap": "^9.0.1"
   },
   "devDependencies": {
+    "chokidar": "^5.0.0",
     "prettier": "^3.8.3"
   }
 }

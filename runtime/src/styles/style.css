@@ -1,0 +1,8 @@
+:root {
+    --color-separator: rgba(0, 0, 0, 0.08);
+}
+
+nav > a.nav-up {
+    visibility: hidden;
+}
+

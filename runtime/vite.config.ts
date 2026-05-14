@@ -30,7 +30,7 @@ export default defineConfig({
         assetFileNames: 'staticassets/[name]-[hash][extname]',
       },
     },
-    sourcemap: false,
+    sourcemap: !false,
     emptyOutDir: true,
     minify: true,
   },
