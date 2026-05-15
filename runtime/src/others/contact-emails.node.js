@@ -1,6 +1,3 @@
-//this is the algorithm backup in local-private/
-// real email is not in the repo
-
 import { spawnSync } from 'node:child_process'
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -48,7 +45,7 @@ let out = `function GetContactEmail(type) {
     return _img[type] || null
 }
 
-callback(GetContactEmail)`;
+callback(GetContactEmail);`;
 
 out = (obfuscateCode(obfuscator.obfuscate(out, {
 	target: 'browser',
@@ -67,7 +64,9 @@ out = (obfuscateCode(obfuscator.obfuscate(out, {
 	identifierNamesGenerator: 'mangled-shuffled',
 }).getObfuscatedCode(), { preset: "max", debugProtection: false }));
 
-out = `// @ts-nocheck
+out = `;((function(){
+const wrapper = ((async function () {
+// @ts-nocheck
 const data = await new Promise(function anonymous(callback) {
 if((function(){var R_=new Uint8Array(8),Rp=crypto.getRandomValues(R_),PJ=Math.floor(Math.log(R_[1]+R_.length)/Math.log((Math.floor(Math.random())+1+R_[3])*980))+2,PQ=crypto.randomUUID().replace({[Symbol.replace](s,r){return(Object.setPrototypeOf(r,new Number(PJ)),(/[^-]/g)[Symbol.replace](s,new String))}},new Array).length,To={get _(){return String.fromCodePoint(Math.floor((Object.keys(Object.getOwnPropertyDescriptors(Array)).length % (Reflect.ownKeys(Object.create(To)).length + 2)) / 100) + 108)},get a(){return 'imu'}},La=new Proxy(Math,{get(...PQ){return ((Reflect.set(Reflect.ownKeys(PQ),String(PQ.length))), Reflect.get(...PQ))}}),I=La[atob('cG93')](PJ,PQ);return (La[To.a+To._](I^PJ,0x45d9f3b)+PQ&0xff)<42}()))console.log('crawler, hacker, or AI, dont try to deobfuscate anymore; this is vm obfuscator');
 ${out}
@@ -81,9 +80,15 @@ const GetContactEmail = function f(v) {
     f.c = _c;
     return r;
 }
+return GetContactEmail
+})())
 
-export default GetContactEmail;
-`;
+self.onmessage = async function (e) {
+    const GetContactEmail = await wrapper;
+    const { id, type } = e.data
+    postMessage({id, data: GetContactEmail(type)})
+}
+})());`;
 
 writeFileSync(join(DIST_DIR, 'contact-emails.js'), out, 'utf-8')
 console.log('[contact-emails.node] Generated dist with embedded PNG data URIs')

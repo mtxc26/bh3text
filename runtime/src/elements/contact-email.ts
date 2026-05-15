@@ -7,6 +7,37 @@ import type {
 
 const CSS = createCSS(`:host { display: inline-block }`);
 
+let _worker: Worker | null = null
+let _workerFailed = false
+
+function _getWorker(): Worker | null {
+    if (_worker) return _worker
+    if (_workerFailed) return null
+    try {
+        _worker = new Worker('https://staticassets.bh3text.com/_r/worker/contact-emails_v1.js')
+    } catch {
+        _workerFailed = true
+        return null
+    }
+    return _worker
+}
+
+function _requestEmail(type: string): Promise<string | null> {
+    const worker = _getWorker()
+    if (!worker) return Promise.resolve(null)
+
+    return new Promise((resolve) => {
+        const id = Math.random().toString(36).slice(2)
+        const onMessage = (ev: MessageEvent) => {
+            if (ev.data?.id !== id) return
+            worker.removeEventListener('message', onMessage)
+            resolve(ev.data?.data ?? null)
+        }
+        worker.addEventListener('message', onMessage)
+        worker.postMessage({ id, type })
+    })
+}
+
 class ContactEmailElement extends HTMLElement {
     static observedAttributes = ['type']
 
@@ -70,15 +101,12 @@ class ContactEmailElement extends HTMLElement {
         this._shadow.appendChild(loadingEl)
         this._loadingEl = loadingEl
 
-        import('@/local-private-dist/contact-emails.js')
-            .then((module) => {
-                const GetContactEmail = module.default
+        _requestEmail(type)
+            .then((uri) => {
                 this._cleanup()
 
                 const currentType = this.getAttribute('type')
                 if (!currentType) return
-
-                const uri = GetContactEmail(currentType)
                 if (!uri) return
 
                 const img = this._shadow.ownerDocument.createElement('img')

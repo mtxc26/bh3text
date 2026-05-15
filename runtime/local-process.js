@@ -2,6 +2,7 @@ import { readFileSync, writeFileSync, readdirSync, copyFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { spawnSync } from 'node:child_process'
 import obfuscator from 'javascript-obfuscator'
+import { rolldown } from 'rolldown';
 
 const distDir = 'src/local-private-dist/'
 const files = readdirSync(distDir).filter(f => f.endsWith('.js'))
@@ -24,12 +25,12 @@ const OCFG = {
 	seed: 20260508,
 	stringArray: !true,
 	stringArrayEncoding: ['rc4'],
-	stringArrayThreshold: 0,//1,
-	splitStrings: !true,
-	splitStringsChunkLength: 0,//10,
+	stringArrayThreshold: 0.3,//1,
+	splitStrings: true,
+	splitStringsChunkLength: 10,
 	compact: true,
 	transformObjectKeys: false,
-	controlFlowFlattening: !true,
+	controlFlowFlattening:! true,
 	controlFlowFlatteningThreshold: 1,
 	deadCodeInjection: !true,
 	sourceMap: true,
@@ -42,7 +43,17 @@ for (const file of files) {
 	const inputPath = join(distDir, file)
 	const code = readFileSync(inputPath, 'utf-8')
 
-	writeFileSync(inputPath, '// @ts-nocheck\n' + (obfuscator.obfuscate(code, OCFG).getObfuscatedCode()) /*+ '\n//# sourceMappingURL=' + file + '.map'*/, 'utf-8')
+    const out  = (obfuscator.obfuscate(code, OCFG).getObfuscatedCode()) /*+ '\n//# sourceMappingURL=' + file + '.map'*/
+    ;
+	writeFileSync(inputPath,out , 'utf-8')
 	//writeFileSync(inputPath + '.map', result.getSourceMap(), 'utf-8')
+	
+	const bundle = await rolldown({ input: inputPath })
+	await bundle.write({
+  file: inputPath,
+  minify: true,
+});
+
+writeFileSync(inputPath, '// @ts-nocheck\n' + readFileSync(inputPath, 'utf-8'), 'utf-8')
 }
 
