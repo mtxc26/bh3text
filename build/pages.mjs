@@ -199,8 +199,9 @@ export async function pages() {
                     groups = [];
                 }
 
+                const title = chapterFullLabel(ch);
                 html = ejs.render(tplChapter, {
-                    title: chapterFullLabel(ch), groups,
+                    title, titleB64: Buffer.from(title).toString("base64"), groups,
                     canonicalUrl: SITE_BASE + `/dialog/${urlDir}/${ch.chapter}/`,
                 }, { rmWhitespace: true, filename: join(ROOT, 'page/chapter-index.ejs') });
                 html = await addAssetRefs(html);
@@ -218,8 +219,9 @@ export async function pages() {
             url: `/dialog/er/${ch.chapter}/${encodeURIComponent(s.id)}`,
             label: s.id,
         }));
+        const title = ch.title;
         html = ejs.render(tplChapter, {
-            title: ch.title, groups: [{ heading: '', items }],
+            title, titleB64: Buffer.from(title).toString("base64"), groups: [{ heading: '', items }],
             canonicalUrl: SITE_BASE + `/dialog/er/${ch.chapter}/`,
         }, { rmWhitespace: true, filename: join(ROOT, 'page/chapter-index.ejs') });
         html = await addAssetRefs(html);

@@ -34,6 +34,7 @@ async function renderPages(template, category, urlDir) {
     const head = categoryLabel + chapterNum;
     const hierarchyTitle = [head, pg.ct].filter(Boolean).join(" ") + (pg.pt ? " > " + pg.pt : "");
     const hierarchyTitleNoSpace = hierarchyTitle;
+    const hierarchyTitleB64 = Buffer.from(hierarchyTitleNoSpace).toString("base64");
 
     const canonicalUrl = SITE_BASE + pg.u;
     const html = ejs.render(template, {
@@ -41,6 +42,7 @@ async function renderPages(template, category, urlDir) {
       stageTitle: pg.pt,
       hierarchyTitle,
       hierarchyTitleNoSpace,
+      hierarchyTitleB64,
       canonicalUrl,
       desc: pg.desc || '',
       dialogs: pg.blocks,

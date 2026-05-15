@@ -32,5 +32,11 @@ export async function SetupLastReadUI() {
 
 export async function SaveLastReadOnPageChange() {
     const loc = new URL(window.location.href);
-    if (loc.pathname.startsWith('/dialog/') && loc.pathname.length > 8) await SetLastRead(loc.href, document.getElementById('page_title_short')?.innerText || document.title);
+    if (loc.pathname.startsWith("/dialog/") && loc.pathname.length > 8) {
+        const raw = document.getElementById("page_title_short")?.innerText;
+        const title = (() => { try { return raw
+            ? new TextDecoder().decode(Uint8Array.from(atob(raw), c => c.charCodeAt(0)))
+            : document.title } catch { return document.title } })();
+        await SetLastRead(loc.href, title);
+    }
 }
