@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<Teleport :disabled="appState.disableAllTeleport || !pageFooterTarget" :to="pageFooterTarget">
-			<div class="page-footer-nav">
+			<div class="page-footer-nav" v-show="!!pageFooterTarget">
                 <div class="nav-links-container" v-if="navPrev || navNext">
                     <a v-if="navPrev" :href="navPrev.url">{{ navPrev.title }}</a>
 					<div class="space"></div>

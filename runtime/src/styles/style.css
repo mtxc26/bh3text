@@ -2,6 +2,11 @@
     --color-separator: rgba(0, 0, 0, 0.08);
 }
 
+body {
+    margin: 0;
+    padding: 8px;
+}
+
 nav > a.nav-up {
     visibility: hidden;
 }
