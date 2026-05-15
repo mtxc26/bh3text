@@ -108,7 +108,7 @@ const prevPage = () => {
 }
 
 const goNav = (url: string) => {
-    window.location.href = url
+    router.push(url)
 }
 
 const scrollToToc = (item: TocItem) => {

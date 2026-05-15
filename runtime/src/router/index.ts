@@ -26,6 +26,7 @@ const router = createRouter({
       path: '/dialog/:pathMatch(.*)+',
       name: 'dialog-page',
       component: () => import('@/views/DialogPage.vue'),
+      props: true,
       meta: {
         SHOW_EXPAND_BTN: true,
       },

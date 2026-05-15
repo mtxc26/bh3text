@@ -30,8 +30,9 @@ async function renderPages(template, category, urlDir) {
       : category === 'main1' ? (DOMAIN_LABELS.main || '主线第一部')
       : (DOMAIN_LABELS.main2 || '主线第二部');
     const chapterNum = category === 'er' ? '' : toChapterNumber(pg.c);
-    const hierarchyTitle = [categoryLabel, chapterNum, pg.pt].filter(Boolean).join(' ');
-    const hierarchyTitleNoSpace = [categoryLabel, chapterNum, ' ' + pg.pt].filter(Boolean).join('');
+    const head = categoryLabel + chapterNum;
+    const hierarchyTitle = [head, pg.ct].filter(Boolean).join(" ") + (pg.pt ? " > " + pg.pt : "");
+    const hierarchyTitleNoSpace = hierarchyTitle;
 
     const canonicalUrl = SITE_BASE + pg.u;
     const html = ejs.render(template, {
