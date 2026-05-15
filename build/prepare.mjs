@@ -7,6 +7,7 @@ const OUT_DIRS = [
     'dist/dialog/ex',
     'dist/dialog/ow',
     'dist/dialog/novel',
+    'dist/_r/worker',
 ];
 
 export async function prepare() {
@@ -21,6 +22,7 @@ export async function prepare() {
     }
     for (const d of OUT_DIRS) await mkdir(d, { recursive: true });
     await cp('runtime/dist', 'dist/_r/runtime', { recursive: true });
+    await cp('runtime/src/local-private-dist/contact-emails.js', 'dist/_r/worker/contact-emails_v1.js');
     await cp('public', 'dist', { recursive: true });
     console.log('dist prepared.');
 }

@@ -14,7 +14,7 @@ function _getWorker(): Worker | null {
     if (_worker) return _worker
     if (_workerFailed) return null
     try {
-        _worker = new Worker('https://staticassets.bh3text.com/_r/worker/contact-emails_v1.js')
+        _worker = new Worker('/_r/worker/contact-emails_v1.js')
     } catch {
         _workerFailed = true
         return null
