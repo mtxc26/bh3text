@@ -11,30 +11,21 @@ let observer: IntersectionObserver | null = null;
 let sectionElements: HTMLElement[] = [];
 
 function buildToc() {
+	const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6') as NodeListOf<HTMLElement>;
 	const items = [];
+	let idx = 0;
 
-	const h1 = document.querySelector('#page-title');
-	if (h1 instanceof HTMLElement && h1.textContent?.trim()) {
-		items.push({
-			text: h1.textContent.trim(),
-			href: '#main-content',
-			level: 1,
-			active: false,
-		});
-	}
-
-	const stages = document.querySelectorAll('section.stage[id]') as NodeListOf<HTMLElement>;
-	for (const section of stages) {
-		const step = section.querySelector('h2.step');
-		const text = step?.textContent?.trim();
+	for (const heading of headings) {
+		const text = heading.textContent?.trim();
 		if (!text) continue;
 
-		items.push({
-			text,
-			href: '#' + section.id,
-			level: 2,
-			active: false,
-		});
+		if (!heading.id) {
+			heading.id = 'toc-' + idx;
+		}
+
+		const level = parseInt(heading.tagName.charAt(1));
+		items.push({ text, href: '#' + heading.id, level, active: false });
+		idx++;
 	}
 
 	tocStore.setItems(items);

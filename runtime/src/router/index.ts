@@ -8,35 +8,32 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: () => import('@/views/Home.vue'),
-      meta: {
-        HIDE_EXPAND_BTN: true,
-      },
     },
     {
       path: '/search/',
       name: 'search',
       component: () => import('@/views/Search.vue'),
-      meta: {
-        HIDE_EXPAND_BTN: true,
-      },
     },
     {
       path: '/dialog/',
       name: 'dialog-index',
       component: () => import('@/views/DialogIndex.vue'),
+      meta: {
+        SHOW_EXPAND_BTN: true,
+      },
     },
     {
       path: '/dialog/:pathMatch(.*)+',
       name: 'dialog-page',
       component: () => import('@/views/DialogPage.vue'),
+      meta: {
+        SHOW_EXPAND_BTN: true,
+      },
     },
     {
       path: '/:pathMatch(.*)*',
       name: 'not-found',
       component: () => import('@/views/NotFound.vue'),
-      meta: {
-        HIDE_EXPAND_BTN: true,
-      },
     }
   ],
 })

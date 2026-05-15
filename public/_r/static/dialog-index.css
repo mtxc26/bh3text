@@ -2,33 +2,33 @@ h1 {
     margin: 16px 0 24px 0;
     color: #222;
 }
-details {
+main details {
     margin: 8px 0;
 }
-summary {
+main summary {
     font-size: 16px;
     font-weight: bold;
     color: #444;
     cursor: pointer;
     padding: 6px 0;
 }
-details details {
+main details details {
     margin-left: 16px;
 }
-details details summary {
+main details details summary {
     font-size: 14px;
     font-weight: normal;
     color: #666;
 }
-ul {
+main ul {
     list-style: none;
     padding-left: 16px;
     margin: 4px 0 12px 0;
 }
-li {
+main li {
     margin: 4px 0;
     line-height: 1.6;
 }
-li a {
+main li a {
     color: #3366cc;
 }

@@ -25,7 +25,7 @@
         <main id="main-content">
             <nav aria-label="内容分类">
                 <% modules.forEach(function(m) { %>
-                <section class="module">
+                <section class="module" <%- m.id ? `id="${m.id}"` : '' %>>
                     <h2><a href="<%= m.url %>"><%= m.name %></a></h2>
                     <p><%= m.desc %></p>
                 </section>

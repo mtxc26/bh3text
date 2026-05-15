@@ -1,6 +1,10 @@
 /*
   cache-control: no-cache
-  Content-Security-Policy: frame-ancestors 'self'; base-uri 'self'; manifest-src 'self'; script-src-attr 'none'; script-src 'self' https://staticassets.bh3text.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' data:; worker-src 'self'
+  Content-Security-Policy: frame-ancestors 'self'; base-uri 'self'; manifest-src 'self'; script-src-attr 'none'; script-src 'self' https://staticassets.bh3text.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' data:; child-src 'self' https: blob: data:; worker-src 'self' https://staticassets.bh3text.com; font-src 'self' https://staticassets.bh3text.com
   X-XSS-Protection: 0
   Access-Control-Allow-Origin: *
   Access-Control-Expose-Headers: Content-Encoding
+
+/cgi/clear_cache.do
+  Clear-Site-Data: "cache"
+  cache-control: no-store

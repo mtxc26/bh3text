@@ -102,16 +102,6 @@ function procColorTag(_, c, content) {
     return `<span style="color:${c}">${content}</span>`;
 }
 
-export function procText(text) {
-    if (typeof text !== 'string') return String(text || '');
-    return text
-        .replace(/<color=(#?\w+)>(.*?)<\/color>/g, procColorTag)
-        .replace(/\{[FM]:([^}]*)}/g, '$1')
-        .replace(/\{RUBY_B#(.*?)}(.*?)\{RUBY_E#}/g,
-            '<ruby>$2<rp>(</rp><rt>$1</rt><rp>)</rp></ruby>')
-        .replace(/\{(.+?)\}/g, (_, k) => PLACEHOLDERS[k] || `{${k}}`);
-}
-
 export function publicUrlFromPath(inputPath) {
     let p = String(inputPath || '').replace(/\\/g, '/');
 

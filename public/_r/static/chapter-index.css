@@ -14,15 +14,15 @@ h2 {
     font-size: 1.1em;
     color: #444;
 }
-ul {
+main ul {
     list-style: none;
     padding: 0;
     margin: 0 0 16px 0;
 }
-li {
+main li {
     margin: 6px 0;
     line-height: 1.6;
 }
-li a {
+main li a {
     color: #3366cc;
 }

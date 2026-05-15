@@ -9,5 +9,6 @@ import {
 export const useAppStateStore = defineStore('AppState', {
     state: () => ({
         sidebarOpen: false,
+        settingDialogOpen: false,
     }),
 })

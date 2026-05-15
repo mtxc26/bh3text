@@ -54,7 +54,7 @@ section.stage {
     color: #333;
 }
 .page-nav {
-    position: sticky;
+    /* position: sticky; */
     top: 0;
     display: flex;
     justify-content: space-between;

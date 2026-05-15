@@ -47,11 +47,9 @@ export async function pages() {
 
     // ======== 1. Home page ========
     const modules = [
+        { id: 'home_LastRead', name: '上次阅读', url: '/', desc: '暂时没有上次阅读记录' },
         { name: '对话', url: '/dialog/', desc: '对话文本' },
         { name: '搜索', url: '/search/', desc: '全局搜索对话文本' },
-        // { name: '文献', url: '/bh3/documents/', desc: '游戏内文献资料' },
-        // { name: '便签', url: '/bh3/notes/', desc: '便签与笔记' },
-        // { name: '收藏', url: '/bh3/collection/', desc: '收藏品展示' },
     ];
     let html;
     html = ejs.render(tplHome, { modules }, { rmWhitespace: true, filename: join(ROOT, 'page/home.ejs') });

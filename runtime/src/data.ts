@@ -3,22 +3,25 @@ import type { IDBPDatabase, IDBPTransaction } from 'idb';
 import { message } from 'ant-design-vue';
 
 export const db_name = 'www.bh3text.com';
-export const db_version = 1;
+export const db_version = 2;
 
 /**@type {import('idb').IDBPDatabase} */
 let db!: import('idb').IDBPDatabase;
 
-interface UpgradeFunction {
+interface _u {
     (db: IDBPDatabase, transaction: IDBPTransaction<unknown, string[], 'versionchange'>, oldVersion: number): void;
 }
 
-const dbUpgrade: Record<number, UpgradeFunction> = {
-    0(db, t, old) {
+const dbUpgrade: Record<number, _u> = {
+    0(db, tx, oldVersion) {
         db.createObjectStore('config');
         db.createObjectStore('cache');
         db.createObjectStore('kv');
         db.createObjectStore('tmp');
     },
+    1(db, tx, oldVersion) {
+        db.createObjectStore('pref');
+    }
 };
 
 export async function initDB() {
@@ -34,6 +37,7 @@ export async function initDB() {
         },
         blocking(currentVersion, blockedVersion, event) {
             db?.close();
+            message.error('数据库遇到问题，请重新加载页面');
         },
         terminated() {},
     });
