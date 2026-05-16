@@ -13,8 +13,11 @@ async function* walk(dir, base = '') {
     for (const e of entries) {
         const full = join(dir, e.name);
         const rel = base + '/' + e.name;
-        if (e.isDirectory()) { yield* walk(full, rel); }
-        else if (e.name.endsWith('.html')) { yield rel; }
+        if (e.isDirectory()) {
+            yield* walk(full, rel);
+        } else if (e.name.endsWith('.html')) {
+            yield rel;
+        }
     }
 }
 
@@ -23,7 +26,7 @@ export async function sitemap() {
     for await (const url of walk(DIST)) {
         let clean = url.replace(/\.html$/, '');
         if (clean.endsWith('/index')) clean = clean.slice(0, -5);
-        links.push({ url: clean, });
+        links.push({ url: clean });
     }
 
     const stream = new SitemapStream({ hostname: BASE });

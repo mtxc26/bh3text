@@ -4,8 +4,13 @@
             <template #title>设置</template>
 
             <div class="settings-panel-content">
-
-                <a-button danger @click="clearCache" :disabled="clearCache__state === 2">{{ clearCache__state ? (clearCache__state === 2 ? '正在清除…' : '确定吗？') : '清除缓存' }}</a-button>
+                <a-button danger @click="clearCache" :disabled="clearCache__state === 2">{{
+                    clearCache__state
+                        ? clearCache__state === 2
+                            ? '正在清除…'
+                            : '确定吗？'
+                        : '清除缓存'
+                }}</a-button>
             </div>
         </DialogView>
     </div>
@@ -34,21 +39,21 @@ const clearCache = async function () {
             content: '成功。',
             okText: '好',
         });
-    }
-    catch (e) {
+    } catch (e) {
         Modal.success({
             title: '清除缓存失败',
             content: String(e),
             okText: '好',
         });
-    }
-    finally { 
+    } finally {
         appState.settingDialogOpen = false;
     }
 };
 
-watch(() => appState.settingDialogOpen, () => clearCache__state.value = 0);
-
+watch(
+    () => appState.settingDialogOpen,
+    () => (clearCache__state.value = 0),
+);
 </script>
 
 <style scoped>

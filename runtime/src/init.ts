@@ -1,10 +1,10 @@
-import { useWindowStateStore } from '@/stores/windowState'
+import { useWindowStateStore } from '@/stores/windowState';
 
 export async function init() {
     const onResize = () => {
-        const { updateWindowSize } = useWindowStateStore()
-        updateWindowSize(window.innerWidth, window.innerHeight)
-    }
-    window.addEventListener('resize', onResize)
-    onResize()
+        const { updateWindowSize } = useWindowStateStore();
+        updateWindowSize(window.innerWidth, window.innerHeight);
+    };
+    window.addEventListener('resize', onResize);
+    onResize();
 }

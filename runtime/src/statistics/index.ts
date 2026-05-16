@@ -1,1 +1,1 @@
-export { setupStatistics } from './main'
+export { setupStatistics } from './main';

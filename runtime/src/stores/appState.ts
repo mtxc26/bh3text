@@ -1,10 +1,5 @@
-import {
-    ref,
-    computed
-} from 'vue'
-import {
-    defineStore
-} from 'pinia'
+import { ref, computed } from 'vue';
+import { defineStore } from 'pinia';
 
 export const useAppStateStore = defineStore('AppState', {
     state: () => ({
@@ -12,4 +7,4 @@ export const useAppStateStore = defineStore('AppState', {
         settingDialogOpen: false,
         disableAllTeleport: false,
     }),
-})
+});

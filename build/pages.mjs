@@ -19,7 +19,13 @@ const DATA_DIR = join(ROOT, 'data/dist/app');
 const DIST_DIR = join(ROOT, 'dist');
 const STAGE_ORDER = ['Main', 'Companion', 'Celebrition', 'Branch', 'Entrust'];
 const STAGE_RANK = Object.fromEntries(STAGE_ORDER.map((k, i) => [k.toLowerCase(), i]));
-const CAT_LABEL = { Main: '主线', Companion: '梦间拾集', Celebrition: '巡游庆典', Branch: '支线', Entrust: '委托' };
+const CAT_LABEL = {
+    Main: '主线',
+    Companion: '梦间拾集',
+    Celebrition: '巡游庆典',
+    Branch: '支线',
+    Entrust: '委托',
+};
 
 async function loadJSON(p) {
     return JSON.parse(await readFile(p, 'utf-8'));
@@ -52,7 +58,11 @@ export async function pages() {
         { name: '搜索', url: '/search/', desc: '全局搜索对话文本' },
     ];
     let html;
-    html = ejs.render(tplHome, { modules }, { rmWhitespace: true, filename: join(ROOT, 'page/home.ejs') });
+    html = ejs.render(
+        tplHome,
+        { modules },
+        { rmWhitespace: true, filename: join(ROOT, 'page/home.ejs') },
+    );
     html = await addAssetRefs(html);
     await writeFile(join(DIST_DIR, 'index.html'), html, 'utf-8');
     console.log('  Home page generated.');
@@ -60,8 +70,7 @@ export async function pages() {
     // ======== 2. Dialog index ========
     const sections = [];
     for (const [typeKey, label] of Object.entries(DOMAIN_LABELS)) {
-        const fn = typeKey === 'main' ? 'main.json'
-            : typeKey === 'main2' ? 'main2.json' : null;
+        const fn = typeKey === 'main' ? 'main.json' : typeKey === 'main2' ? 'main2.json' : null;
         if (!fn) continue;
         const idx = await loadJSON(join(DATA_DIR, 'index', fn));
         const urlDir = DOMAIN_URL_MAP[typeKey];
@@ -90,7 +99,11 @@ export async function pages() {
         sections.push({ label, groups });
     }
     await mkdir(join(DIST_DIR, 'dialog'), { recursive: true });
-    html = ejs.render(tplDialog, { sections }, { rmWhitespace: true, filename: join(ROOT, 'page/dialog-index.ejs') });
+    html = ejs.render(
+        tplDialog,
+        { sections },
+        { rmWhitespace: true, filename: join(ROOT, 'page/dialog-index.ejs') },
+    );
     html = await addAssetRefs(html);
     await writeFile(join(DIST_DIR, 'dialog/index.html'), html, 'utf-8');
     console.log('  Dialog index page generated.');
@@ -124,12 +137,20 @@ export async function pages() {
             for (const ch of chapters) {
                 const outDir = join(DIST_DIR, 'dialog', urlDir, String(ch.chapter));
 
-                const chDataPath = typeKey === 'main'
-                    ? join(DATA_DIR, 'chapters/data', `${ch.chapter}.json`)
-                    : join(DATA_DIR, 'chapters/data',
-                        `${100 + Math.floor(Number(ch.chapter))}${String(ch.chapter).includes('.5') ? '_5' : ''}.json`);
+                const chDataPath =
+                    typeKey === 'main'
+                        ? join(DATA_DIR, 'chapters/data', `${ch.chapter}.json`)
+                        : join(
+                              DATA_DIR,
+                              'chapters/data',
+                              `${100 + Math.floor(Number(ch.chapter))}${String(ch.chapter).includes('.5') ? '_5' : ''}.json`,
+                          );
                 let chData;
-                try { chData = await loadJSON(chDataPath); } catch { chData = null; }
+                try {
+                    chData = await loadJSON(chDataPath);
+                } catch {
+                    chData = null;
+                }
 
                 const vp = validPages.get(String(ch.chapter)) || new Set();
 
@@ -152,16 +173,25 @@ export async function pages() {
                                 });
                             }
                             if (groupItems.length)
-                                groups.push({ heading: act.actData?.actName || '', items: groupItems });
+                                groups.push({
+                                    heading: act.actData?.actName || '',
+                                    items: groupItems,
+                                });
                         }
                         // 补充 pages JSON 中有但未被 stages 覆盖的页面
                         const extraItems = [];
                         for (const pid of vp) {
                             if (!used.has(pid))
-                                extraItems.push({ url: `/dialog/${urlDir}/${ch.chapter}/${encodeURIComponent(pid)}`, label: pid });
+                                extraItems.push({
+                                    url: `/dialog/${urlDir}/${ch.chapter}/${encodeURIComponent(pid)}`,
+                                    label: pid,
+                                });
                         }
-                                                if (extraItems.length)
-                            groups.push({ heading: groups.length === 0 ? '' : '其他', items: extraItems });
+                        if (extraItems.length)
+                            groups.push({
+                                heading: groups.length === 0 ? '' : '其他',
+                                items: extraItems,
+                            });
                     } else {
                         // main2: stages 是 dict，按 STAGE_ORDER 分组
                         groups = [];
@@ -190,20 +220,32 @@ export async function pages() {
                         const extraItems = [];
                         for (const pid of vp) {
                             if (!used.has(pid))
-                                extraItems.push({ url: `/dialog/${urlDir}/${ch.chapter}/${encodeURIComponent(pid)}`, label: pid });
-                                                }
+                                extraItems.push({
+                                    url: `/dialog/${urlDir}/${ch.chapter}/${encodeURIComponent(pid)}`,
+                                    label: pid,
+                                });
+                        }
                         if (extraItems.length)
-                            groups.push({ heading: groups.length === 0 ? '' : '其他', items: extraItems });
+                            groups.push({
+                                heading: groups.length === 0 ? '' : '其他',
+                                items: extraItems,
+                            });
                     }
                 } else {
                     groups = [];
                 }
 
                 const title = chapterFullLabel(ch);
-                html = ejs.render(tplChapter, {
-                    title, titleB64: Buffer.from(title).toString("base64"), groups,
-                    canonicalUrl: SITE_BASE + `/dialog/${urlDir}/${ch.chapter}/`,
-                }, { rmWhitespace: true, filename: join(ROOT, 'page/chapter-index.ejs') });
+                html = ejs.render(
+                    tplChapter,
+                    {
+                        title,
+                        titleB64: Buffer.from(title).toString('base64'),
+                        groups,
+                        canonicalUrl: SITE_BASE + `/dialog/${urlDir}/${ch.chapter}/`,
+                    },
+                    { rmWhitespace: true, filename: join(ROOT, 'page/chapter-index.ejs') },
+                );
                 html = await addAssetRefs(html);
                 await writeFile(join(outDir, 'index.html'), html, 'utf-8');
             }
@@ -213,17 +255,23 @@ export async function pages() {
 
     // ======== 4. Er chapter index pages ========
     const erIdx = await loadJSON(join(ROOT, 'data/dist/dialog/index/er.json'));
-    for (const ch of (await getErChapters())) {
+    for (const ch of await getErChapters()) {
         const stages = erIdx[ch.chapter] || [];
         const items = stages.map((s) => ({
             url: `/dialog/er/${ch.chapter}/${encodeURIComponent(s.id)}`,
             label: s.id,
         }));
         const title = ch.title;
-        html = ejs.render(tplChapter, {
-            title, titleB64: Buffer.from(title).toString("base64"), groups: [{ heading: '', items }],
-            canonicalUrl: SITE_BASE + `/dialog/er/${ch.chapter}/`,
-        }, { rmWhitespace: true, filename: join(ROOT, 'page/chapter-index.ejs') });
+        html = ejs.render(
+            tplChapter,
+            {
+                title,
+                titleB64: Buffer.from(title).toString('base64'),
+                groups: [{ heading: '', items }],
+                canonicalUrl: SITE_BASE + `/dialog/er/${ch.chapter}/`,
+            },
+            { rmWhitespace: true, filename: join(ROOT, 'page/chapter-index.ejs') },
+        );
         html = await addAssetRefs(html);
         await writeFile(join(DIST_DIR, 'dialog', 'er', ch.chapter, 'index.html'), html, 'utf-8');
     }

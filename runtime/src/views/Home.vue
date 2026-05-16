@@ -8,6 +8,5 @@ import { SetupLastReadUI } from '@/preferences/last-read';
 
 onMounted(() => {
     SetupLastReadUI();
-})
-
+});
 </script>

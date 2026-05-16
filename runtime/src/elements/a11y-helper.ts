@@ -61,14 +61,13 @@ class a11yHelperElement extends HTMLElement {
     _updateOnlyDisplay() {
         const div = this._shadow.getElementById('onlyDisplay__content');
         if (div) {
-            div.innerHTML = (this.getAttribute('content') || '');
+            div.innerHTML = this.getAttribute('content') || '';
         }
     }
 }
 
-export default ({
+export default {
     setup: () => customElements.define('a11y-helper', a11yHelperElement),
     element: a11yHelperElement,
-    tag_name: 'a11y-helper'
-}) as const satisfies ElementRegistryItem;
-
+    tag_name: 'a11y-helper',
+} as const satisfies ElementRegistryItem;

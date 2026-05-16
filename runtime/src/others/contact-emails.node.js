@@ -1,10 +1,10 @@
-import { spawnSync } from 'node:child_process'
-import { writeFileSync } from 'node:fs'
-import { join } from 'node:path'
-import { obfuscateCode } from "ruam";
-import obfuscator from 'javascript-obfuscator'
+import { spawnSync } from 'node:child_process';
+import { writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { obfuscateCode } from 'ruam';
+import obfuscator from 'javascript-obfuscator';
 
-const DIST_DIR = 'src/local-private-dist/'
+const DIST_DIR = 'src/local-private-dist/';
 
 const renderEmail = (email) => {
     const py = `
@@ -27,14 +27,17 @@ d.text((pad - bbox[0], pad - bbox[1]), text, fill=(0, 0, 0, 255), font=font)
 buf = io.BytesIO()
 img.save(buf, 'PNG')
 sys.stdout.write(base64.b64encode(buf.getvalue()).decode('ascii'))
-`
-    const r = spawnSync('python3', ['-c', py], { encoding: 'utf-8', stdio: ['ignore', 'pipe', 'pipe'] })
-    if (r.status !== 0) throw new Error(`Python render failed: ${r.stderr}`)
-    return `data:image/png;base64,${r.stdout.trim()}`
-}
+`;
+    const r = spawnSync('python3', ['-c', py], {
+        encoding: 'utf-8',
+        stdio: ['ignore', 'pipe', 'pipe'],
+    });
+    if (r.status !== 0) throw new Error(`Python render failed: ${r.stderr}`);
+    return `data:image/png;base64,${r.stdout.trim()}`;
+};
 
-const contactB64   = renderEmail('youremail')
-const copyrightB64 = renderEmail('youremail')
+const contactB64 = renderEmail('youremail');
+const copyrightB64 = renderEmail('youremail');
 
 let out = `function GetContactEmail(type) {
     if (!type) return null
@@ -47,22 +50,27 @@ let out = `function GetContactEmail(type) {
 
 callback(GetContactEmail);`;
 
-out = (obfuscateCode(obfuscator.obfuscate(out, {
-	target: 'browser',
-	seed: 20260514,
-	stringArray: true,
-	stringArrayEncoding: ['base64'],
-	stringArrayThreshold: 0.3,//1,
-	splitStrings: true,
-	splitStringsChunkLength: 10,
-	compact: true,
-	transformObjectKeys: false,
-	controlFlowFlattening: !true,
-	controlFlowFlatteningThreshold: 1,
-	deadCodeInjection: !true,
-	sourceMap: false,
-	identifierNamesGenerator: 'mangled-shuffled',
-}).getObfuscatedCode(), { preset: "max", debugProtection: false }));
+out = obfuscateCode(
+    obfuscator
+        .obfuscate(out, {
+            target: 'browser',
+            seed: 20260514,
+            stringArray: true,
+            stringArrayEncoding: ['base64'],
+            stringArrayThreshold: 0.3, //1,
+            splitStrings: true,
+            splitStringsChunkLength: 10,
+            compact: true,
+            transformObjectKeys: false,
+            controlFlowFlattening: !true,
+            controlFlowFlatteningThreshold: 1,
+            deadCodeInjection: !true,
+            sourceMap: false,
+            identifierNamesGenerator: 'mangled-shuffled',
+        })
+        .getObfuscatedCode(),
+    { preset: 'max', debugProtection: false },
+);
 
 out = `;((function(){
 const wrapper = ((async function () {
@@ -90,5 +98,5 @@ self.onmessage = async function (e) {
 }
 })());`;
 
-writeFileSync(join(DIST_DIR, 'contact-emails.js'), out, 'utf-8')
-console.log('[contact-emails.node] Generated dist with embedded PNG data URIs')
+writeFileSync(join(DIST_DIR, 'contact-emails.js'), out, 'utf-8');
+console.log('[contact-emails.node] Generated dist with embedded PNG data URIs');
