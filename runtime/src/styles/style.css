@@ -3,8 +3,7 @@
 }
 
 body {
-    margin: 0;
-    padding: 8px;
+    box-sizing: border-box;
 }
 
 nav > a.nav-up {

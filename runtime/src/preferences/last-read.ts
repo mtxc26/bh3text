@@ -23,6 +23,7 @@ export async function SetupLastReadUI() {
     if (!val || typeof val !== 'object' || !a || !p) {
         if (!a) lastRead.remove();
         else ((a.onclick = (e) => e.preventDefault()), false);
+        if (!(await hasConsent('f')) && p) p.innerText = '您禁用了功能性 Cookies ，我们无法保存阅读进度数据。请考虑调整您的 Cookies 偏好。';
         return;
     }
 
