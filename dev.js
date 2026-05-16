@@ -157,7 +157,10 @@ await runEjs();
 console.log('  ✅ EJS done');
 
 console.log('\n⚙️  Starting runtime build --watch...');
-const viteWatch = spawn('npx', ['vite', 'build', '--watch'], {
+const viteCmd = process.platform === 'win32'
+  ? { cmd: 'cmd', args: ['/D', '/S', '/C', 'npx vite build --watch'] }
+  : { cmd: 'npx', args: ['vite', 'build', '--watch'] };
+const viteWatch = spawn(viteCmd.cmd, viteCmd.args, {
   cwd: join(ROOT, 'runtime'),
   stdio: 'inherit',
 });

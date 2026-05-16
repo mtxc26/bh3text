@@ -4,7 +4,8 @@
             <template #title>设置</template>
 
             <div class="settings-panel-content">
-                <a-button danger @click="clearCache" :disabled="clearCache__state === 2">{{ clearCache__state ? (clearCache__state === 2 ? '正在清除…' : '确定吗？') : '清除缓存' }}</a-button>
+                <div class="row"><a-button @click="vm.showPrivacyCenter()">您的隐私选项</a-button></div>
+                <div class="row"><a-button danger @click="clearCache" :disabled="clearCache__state === 2">{{ clearCache__state ? (clearCache__state === 2 ? '正在清除…' : '确定吗？') : '清除缓存' }}</a-button></div>
             </div>
         </DialogView>
     </div>
@@ -15,6 +16,7 @@ import { useAppStateStore } from '@/stores/appState';
 import { ref, watch } from 'vue';
 import { Button as AButton, Modal } from 'ant-design-vue';
 import { DialogView } from 'vue-dialog-view/cssless';
+import { runtime_vm as vm } from '@/app';
 
 const appState = useAppStateStore();
 
@@ -54,5 +56,10 @@ watch(
 .settings-container > .a {
     width: 100%;
     height: 100%;
+}
+.settings-panel-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
 }
 </style>
