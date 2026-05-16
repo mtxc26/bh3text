@@ -3,7 +3,7 @@
         <a-drawer class="a-drawer sidebar" :width="Math.min(windowState.width, 250)" :headerStyle="{ padding: '0.5em 1em', border: '0' }" :bodyStyle="{ padding: 0, display: 'flex', flexDirection: 'column' }" placement="left" :closable="false" :open="appState.sidebarOpen" @close="appState.sidebarOpen = false">
             <template #title>
                 <div class="header" v-if="prevUrl">
-                    <a-button style="padding: 0" type="link" @click="prevPage">{{ prevPageText || '< 返回' }}</a-button>
+                    <a-button type="link" style="padding: 0" @click="goPrev"><span>{{ prevPageText || '< 返回' }}</span></a-button>
                 </div>
             </template>
             <template #extra>
@@ -39,8 +39,8 @@
             </div>
             <div class="content-bottom">
                 <div class="nav-links-container" v-if="navPrev || navNext">
-                    <a-button size="small" type="link" v-if="navPrev" @click="goNav(navPrev.url)">{{ navPrev.title }}</a-button>
-                    <a-button size="small" type="link" v-if="navNext" @click="goNav(navNext.url)">{{ navNext.title }}</a-button>
+                    <a v-if="navPrev" :href="navPrev.url" @click.prevent="goNav(navPrev.url)">{{ navPrev.title }}</a>
+                    <a v-if="navNext" class="btn-right" :href="navNext.url" @click.prevent="goNav(navNext.url)">{{ navNext.title }}</a>
                 </div>
             </div>
         </a-drawer>
@@ -87,12 +87,9 @@ const canBack = ref(false);
 
 const prevUrl = ref<string | null>(null);
 const prevPageText = ref('');
+const goPrev = () => goNav(prevUrl.value);
 const navPrev = ref<{ url: string; title: string } | null>(null);
 const navNext = ref<{ url: string; title: string } | null>(null);
-
-const prevPage = () => {
-    prevUrl.value && (window.location.href = prevUrl.value);
-};
 
 const goNav = (url: string) => {
     try {
@@ -169,6 +166,16 @@ router.afterEach(() => {
     left: 1em;
     top: 1em;
 }
+.header-btn > * {
+    display: inline-block;
+    margin: auto;
+}
+.header-btn {
+    display: inline-flex;
+    height: 32px;
+    text-align: center;
+    font-size: small;
+}
 .row {
     display: flex;
     gap: 0.5em;
@@ -182,8 +189,7 @@ router.afterEach(() => {
 .content .row {
     padding: 0;
 }
-.content-head,
-.content-bottom {
+.content-head, .content-bottom {
     padding-top: 0.5em;
     padding-bottom: 0.5em;
     --bs: 1px solid var(--color-separator);
@@ -199,14 +205,15 @@ router.afterEach(() => {
 }
 .nav-links-container {
     display: flex;
-    flex-direction: column;
-    gap: 4px;
+    gap: 0.5em;
+    padding: 0 10px;
 }
-.nav-links-container :deep(.ant-btn-link) {
-    padding: 0;
-    font-size: 13px;
+.nav-links-container > * {
+    flex: 1;
 }
-
+.nav-links-container > .btn-right {
+    text-align: right;
+}
 .toc-list {
     list-style: none;
     margin: 0;

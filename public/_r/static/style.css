@@ -5,10 +5,10 @@
     --link-color: #3366cc;
 }
 
-/* Focus indicator (WCAG 2.4.7) */
 :focus-visible {
-    outline: 2px solid #3366cc;
-    outline-offset: 2px;
+    outline: 2px solid #91caff;
+    outline-offset: 1px;
+    transition: outline-offset 0s,outline 0s;
 }
 
 /* Skip link (WCAG 2.4.1) */
@@ -58,9 +58,4 @@ footer#site_footer #privacy_consent {
     margin-top: 0;
     display: inline-flex;
     align-items: center;
-}
-
-::highlight(page-hash-highlight) {
-    background: #fff3a3;
-    color: inherit;
 }

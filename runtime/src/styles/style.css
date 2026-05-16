@@ -10,6 +10,11 @@ body {
     padding-top: 0;
 }
 
+::highlight(page-hash-highlight) {
+    background: #fff3a3;
+    color: inherit;
+}
+
 nav > a.nav-up {
     visibility: hidden;
 }

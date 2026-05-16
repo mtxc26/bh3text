@@ -4,7 +4,7 @@
             <template #title>设置</template>
 
             <div class="settings-panel-content">
-                <div class="row"><a-button @click="vm.showPrivacyCenter()">您的隐私选项</a-button></div>
+                <div class="row"><a-button @click="((appState.settingDialogOpen = false), (vm.showPrivacyCenter()))">您的隐私选项</a-button></div>
                 <div class="row"><a-button danger @click="clearCache" :disabled="clearCache__state === 2">{{ clearCache__state ? (clearCache__state === 2 ? '正在清除…' : '确定吗？') : '清除缓存' }}</a-button></div>
             </div>
         </DialogView>
