@@ -95,7 +95,16 @@ const prevPage = () => {
 };
 
 const goNav = (url: string) => {
-    router.push(url);
+    try {
+        const u = new URL(url);
+        if (u.origin === window.location.origin) {
+            router.push(u.pathname + u.search + u.hash);
+        } else {
+            window.location.href = url;
+        }
+    } catch {
+        window.location.href = url;
+    }
 };
 
 const scrollToToc = (item: TocItem) => {
