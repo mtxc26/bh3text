@@ -7,9 +7,7 @@ import { useTocStore } from '@/stores/tocState';
 const tocStore = useTocStore();
 
 function buildToc() {
-    const detailsList = document.querySelectorAll(
-        '#main-content details',
-    ) as NodeListOf<HTMLElement>;
+    const detailsList = document.querySelectorAll('#main-content details') as NodeListOf<HTMLElement>;
     const items = [];
     let idx = 0;
 

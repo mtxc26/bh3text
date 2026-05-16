@@ -2,13 +2,7 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import ejs from 'ejs';
 import { fileURLToPath } from 'node:url';
-import {
-    SITE_BASE,
-    addAssetRefs,
-    toChapterNumber,
-    DOMAIN_LABELS,
-    MARS_STAGE_NUMBER_MAP,
-} from './util.mjs';
+import { SITE_BASE, addAssetRefs, toChapterNumber, DOMAIN_LABELS, MARS_STAGE_NUMBER_MAP } from './util.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -31,22 +25,11 @@ async function renderPages(template, category, urlDir) {
 
         const urlParts = pg.u.split('/');
         const fname = decodeURIComponent(urlParts[urlParts.length - 1]);
-        const isMarsCompanion =
-            category === 'main2' &&
-            String(pg.c).includes('.5') &&
-            MARS_STAGE_NUMBER_MAP[String(pg.c)];
-        const categoryLabel =
-            category === 'er'
-                ? '往世乐土'
-                : category === 'main1'
-                  ? DOMAIN_LABELS.main || '主线第一部'
-                  : isMarsCompanion
-                    ? '梦间拾集'
-                    : DOMAIN_LABELS.main2 || '主线第二部';
+        const isMarsCompanion = category === 'main2' && String(pg.c).includes('.5') && MARS_STAGE_NUMBER_MAP[String(pg.c)];
+        const categoryLabel = category === 'er' ? '往世乐土' : category === 'main1' ? DOMAIN_LABELS.main || '主线第一部' : isMarsCompanion ? '梦间拾集' : DOMAIN_LABELS.main2 || '主线第二部';
         const chapterNum = category === 'er' || isMarsCompanion ? '' : toChapterNumber(pg.c);
         const head = categoryLabel + chapterNum;
-        const hierarchyTitle =
-            [head, pg.ct].filter(Boolean).join(' ') + (pg.pt ? ' > ' + pg.pt : '');
+        const hierarchyTitle = [head, pg.ct].filter(Boolean).join(' ') + (pg.pt ? ' > ' + pg.pt : '');
         const hierarchyTitleNoSpace = hierarchyTitle;
         const hierarchyTitleB64 = Buffer.from(hierarchyTitleNoSpace).toString('base64');
 

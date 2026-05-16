@@ -1,9 +1,6 @@
 <template>
     <div>
-        <Teleport
-            :disabled="appState.disableAllTeleport || !pageFooterTarget"
-            :to="pageFooterTarget"
-        >
+        <Teleport :disabled="appState.disableAllTeleport || !pageFooterTarget" :to="pageFooterTarget">
             <div class="page-footer-nav" v-show="!!pageFooterTarget">
                 <div class="nav-links-container" v-if="navPrev || navNext">
                     <a v-if="navPrev" :href="navPrev.url">{{ navPrev.title }}</a>
@@ -33,18 +30,14 @@ watch(
     () => {
         pageFooterTarget.value = document.getElementById('page-footer-nav-container');
 
-        const prevLink = document.querySelector(
-            'nav.page-nav .nav-links a.nav-prev',
-        ) as HTMLAnchorElement | null;
+        const prevLink = document.querySelector('nav.page-nav .nav-links a.nav-prev') as HTMLAnchorElement | null;
         if (prevLink?.getAttribute('href')) {
             navPrev.value = {
                 url: new URL(prevLink.getAttribute('href')!, location.href).href,
                 title: prevLink.textContent?.trim() || '',
             };
         }
-        const nextLink = document.querySelector(
-            'nav.page-nav .nav-links a.nav-next',
-        ) as HTMLAnchorElement | null;
+        const nextLink = document.querySelector('nav.page-nav .nav-links a.nav-next') as HTMLAnchorElement | null;
         if (nextLink?.getAttribute('href')) {
             navNext.value = {
                 url: new URL(nextLink.getAttribute('href')!, location.href).href,
@@ -107,9 +100,7 @@ function updateActive() {
 }
 
 function setupObserver() {
-    sectionElements.value = tocStore.items
-        .map((item) => document.querySelector(item.href) as HTMLElement)
-        .filter(Boolean);
+    sectionElements.value = tocStore.items.map((item) => document.querySelector(item.href) as HTMLElement).filter(Boolean);
 
     if (sectionElements.value.length === 0) return;
 

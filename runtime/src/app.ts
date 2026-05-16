@@ -36,10 +36,7 @@ export async function setupApp() {
     app_css.rel = 'stylesheet';
     //console.log(import.meta.env)
     // @ts-ignore
-    app_css.href =
-        new URL('./style.css', new URL(__OUTFILE_DEPLOY_PATH__, location.href)).href +
-        '?ref=git%3A' +
-        __BUILD_ID__;
+    app_css.href = new URL('./style.css', new URL(__OUTFILE_DEPLOY_PATH__, location.href)).href + '?ref=git%3A' + __BUILD_ID__;
     document.head.append(app_css);
 
     const real_container = document.createElement('div');

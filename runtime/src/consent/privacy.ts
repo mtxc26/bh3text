@@ -24,9 +24,7 @@ function createPrivacyLink(text: string) {
 }
 
 export async function setupPrivacyLinks() {
-    const el =
-        document.getElementById('privacy_consent') ??
-        document.body.appendChild(document.createElement('div'));
+    const el = document.getElementById('privacy_consent') ?? document.body.appendChild(document.createElement('div'));
     if (!el || el instanceof HTMLTemplateElement) return;
     if (!el.id) el.id = 'privacy_consent';
 

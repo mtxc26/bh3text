@@ -26,8 +26,7 @@ export const CONSENT_CATEGORIES: ConsentCategoryInfo[] = [
     {
         key: 'f',
         label: '功能',
-        description:
-            '这些 Cookies 帮助我们存储您的偏好设置，例如语言和时区。关闭它们将导致部分功能或设置无法持久化保存。',
+        description: '这些 Cookies 帮助我们存储您的偏好设置，例如语言和时区。关闭它们将导致部分功能或设置无法持久化保存。',
         required: false,
     },
     {

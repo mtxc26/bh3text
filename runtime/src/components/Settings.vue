@@ -4,13 +4,7 @@
             <template #title>设置</template>
 
             <div class="settings-panel-content">
-                <a-button danger @click="clearCache" :disabled="clearCache__state === 2">{{
-                    clearCache__state
-                        ? clearCache__state === 2
-                            ? '正在清除…'
-                            : '确定吗？'
-                        : '清除缓存'
-                }}</a-button>
+                <a-button danger @click="clearCache" :disabled="clearCache__state === 2">{{ clearCache__state ? (clearCache__state === 2 ? '正在清除…' : '确定吗？') : '清除缓存' }}</a-button>
             </div>
         </DialogView>
     </div>

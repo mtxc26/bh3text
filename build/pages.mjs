@@ -2,16 +2,7 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import ejs from 'ejs';
 import { fileURLToPath } from 'node:url';
-import {
-    SITE_BASE,
-    toChapterNumber,
-    MARS_STAGE_NUMBER_MAP,
-    DOMAIN_LABELS,
-    DOMAIN_URL_MAP,
-    getErChapters,
-    addAssetRefs,
-    publicUrlFromPath,
-} from './util.mjs';
+import { SITE_BASE, toChapterNumber, MARS_STAGE_NUMBER_MAP, DOMAIN_LABELS, DOMAIN_URL_MAP, getErChapters, addAssetRefs, publicUrlFromPath } from './util.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -58,11 +49,7 @@ export async function pages() {
         { name: '搜索', url: '/search/', desc: '全局搜索对话文本' },
     ];
     let html;
-    html = ejs.render(
-        tplHome,
-        { modules },
-        { rmWhitespace: true, filename: join(ROOT, 'page/home.ejs') },
-    );
+    html = ejs.render(tplHome, { modules }, { rmWhitespace: true, filename: join(ROOT, 'page/home.ejs') });
     html = await addAssetRefs(html);
     await writeFile(join(DIST_DIR, 'index.html'), html, 'utf-8');
     console.log('  Home page generated.');
@@ -99,11 +86,7 @@ export async function pages() {
         sections.push({ label, groups });
     }
     await mkdir(join(DIST_DIR, 'dialog'), { recursive: true });
-    html = ejs.render(
-        tplDialog,
-        { sections },
-        { rmWhitespace: true, filename: join(ROOT, 'page/dialog-index.ejs') },
-    );
+    html = ejs.render(tplDialog, { sections }, { rmWhitespace: true, filename: join(ROOT, 'page/dialog-index.ejs') });
     html = await addAssetRefs(html);
     await writeFile(join(DIST_DIR, 'dialog/index.html'), html, 'utf-8');
     console.log('  Dialog index page generated.');
@@ -137,14 +120,7 @@ export async function pages() {
             for (const ch of chapters) {
                 const outDir = join(DIST_DIR, 'dialog', urlDir, String(ch.chapter));
 
-                const chDataPath =
-                    typeKey === 'main'
-                        ? join(DATA_DIR, 'chapters/data', `${ch.chapter}.json`)
-                        : join(
-                              DATA_DIR,
-                              'chapters/data',
-                              `${100 + Math.floor(Number(ch.chapter))}${String(ch.chapter).includes('.5') ? '_5' : ''}.json`,
-                          );
+                const chDataPath = typeKey === 'main' ? join(DATA_DIR, 'chapters/data', `${ch.chapter}.json`) : join(DATA_DIR, 'chapters/data', `${100 + Math.floor(Number(ch.chapter))}${String(ch.chapter).includes('.5') ? '_5' : ''}.json`);
                 let chData;
                 try {
                     chData = await loadJSON(chDataPath);
@@ -213,8 +189,7 @@ export async function pages() {
                                     label: info.Title || expectedId,
                                 });
                             }
-                            if (groupItems.length)
-                                groups.push({ heading: CAT_LABEL[cat] || cat, items: groupItems });
+                            if (groupItems.length) groups.push({ heading: CAT_LABEL[cat] || cat, items: groupItems });
                         }
                         // 补充未覆盖的页面
                         const extraItems = [];

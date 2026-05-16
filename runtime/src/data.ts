@@ -9,11 +9,7 @@ export const db_version = 2;
 let db!: import('idb').IDBPDatabase;
 
 interface _u {
-    (
-        db: IDBPDatabase,
-        transaction: IDBPTransaction<unknown, string[], 'versionchange'>,
-        oldVersion: number,
-    ): void;
+    (db: IDBPDatabase, transaction: IDBPTransaction<unknown, string[], 'versionchange'>, oldVersion: number): void;
 }
 
 const dbUpgrade: Record<number, _u> = {
@@ -37,9 +33,7 @@ export async function initDB() {
         },
         blocked(currentVersion, blockedVersion, event) {
             message.error('数据库初始化失败，请重新加载页面');
-            throw new Error(
-                `Failed to open database ${db_name}: blocked: currentVersion = ${currentVersion}, blockedVersion = ${blockedVersion}`,
-            );
+            throw new Error(`Failed to open database ${db_name}: blocked: currentVersion = ${currentVersion}, blockedVersion = ${blockedVersion}`);
         },
         blocking(currentVersion, blockedVersion, event) {
             db?.close();

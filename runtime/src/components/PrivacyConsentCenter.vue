@@ -30,9 +30,7 @@ defineExpose({ show, close });
     <DialogView v-model="open">
         <template #title>Your Privacy Choices</template>
         <div class="section">
-            <button class="link-btn" @click="emit('doNotSell')">
-                Do Not Sell My Personal Information
-            </button>
+            <button class="link-btn" @click="emit('doNotSell')">Do Not Sell My Personal Information</button>
         </div>
         <div class="section">
             <button class="link-btn" @click="emit('openPreferences')">
@@ -41,11 +39,7 @@ defineExpose({ show, close });
             </button>
         </div>
         <div class="section">
-            <a
-                class="link-btn"
-                href="/about/privacy.html"
-                style="text-decoration: none; color: inherit"
-            >
+            <a class="link-btn" href="/about/privacy.html" style="text-decoration: none; color: inherit">
                 <span>Privacy Policy</span>
                 <span class="arrow">›</span>
             </a>

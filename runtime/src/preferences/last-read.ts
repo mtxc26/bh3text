@@ -4,10 +4,7 @@ import router from '@/router';
 
 export async function GetLastRead() {
     if (!(await hasConsent('f'))) return null;
-    return (
-        ((await db.get('pref', 'app.history.last_read_page')) as { url: string; title: string }) ??
-        null
-    );
+    return ((await db.get('pref', 'app.history.last_read_page')) as { url: string; title: string }) ?? null;
 }
 
 export async function SetLastRead(url: string, title: string) {
@@ -40,9 +37,7 @@ export async function SaveLastReadOnPageChange() {
         const raw = document.getElementById('page_title_short')?.innerText;
         const title = (() => {
             try {
-                return raw
-                    ? new TextDecoder().decode(Uint8Array.from(atob(raw), (c) => c.charCodeAt(0)))
-                    : document.title;
+                return raw ? new TextDecoder().decode(Uint8Array.from(atob(raw), (c) => c.charCodeAt(0))) : document.title;
             } catch {
                 return document.title;
             }

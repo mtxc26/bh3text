@@ -49,10 +49,5 @@ defineExpose({ showConsentDialog, showPrivacyCenter });
 <template>
     <CookieConsentDialog ref="cookieDialog" @saved="center?.close()" />
     <DoNotSellDialog ref="dnsDialog" @confirmed="center?.close()" />
-    <PrivacyConsentCenter
-        ref="center"
-        @do-not-sell="onDoNotSell"
-        @open-preferences="onOpenPreferences"
-        @closed="onCenterClosed"
-    />
+    <PrivacyConsentCenter ref="center" @do-not-sell="onDoNotSell" @open-preferences="onOpenPreferences" @closed="onCenterClosed" />
 </template>

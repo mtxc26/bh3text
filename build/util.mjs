@@ -83,11 +83,7 @@ export async function addAssetRefs(html) {
 let _erChapters = null;
 export async function getErChapters() {
     if (_erChapters) return _erChapters;
-    const data = new Function(
-        'let Util;' +
-            (await readFile(join(__dirname, '..', 'data', 'dist', 'basic', 'basic.js'), 'utf-8')) +
-            ';return GameRogueData',
-    )();
+    const data = new Function('let Util;' + (await readFile(join(__dirname, '..', 'data', 'dist', 'basic', 'basic.js'), 'utf-8')) + ';return GameRogueData')();
     _erChapters = Object.entries(data).map(([ch, v]) => ({
         chapter: ch,
         title: v.title,
@@ -99,8 +95,7 @@ export async function getErChapters() {
 
 const PLACEHOLDERS = {
     PJMS_NICKNAME: '<span class="dialog-nickname" data-custom-name="PJMS_NICKNAME">寻梦者</span>',
-    PJMS_FIRSTSET_NICKNAME:
-        '<span class="dialog-nickname" data-custom-name="PJMS_FIRSTSET_NICKNAME">寻梦者</span>',
+    PJMS_FIRSTSET_NICKNAME: '<span class="dialog-nickname" data-custom-name="PJMS_FIRSTSET_NICKNAME">寻梦者</span>',
     NICKNAME: '<span class="dialog-nickname" data-custom-name="NICKNAME">舰长</span>',
     DLC_NICKNAME: '<span class="dialog-nickname" data-custom-name="DLC_NICKNAME">队员</span>',
     DLC2_NICKNAME: '<span class="dialog-nickname" data-custom-name="DLC2_NICKNAME">队员</span>',
@@ -108,8 +103,7 @@ const PLACEHOLDERS = {
 
 function procColorTag(_, c, content) {
     c = c.toLowerCase();
-    if (c === '#ffffffff' || c === '#fff' || c === '#fffff' || c === '#fffffff' || c === '#ffffff')
-        return '<span style="color:#fff">';
+    if (c === '#ffffffff' || c === '#fff' || c === '#fffff' || c === '#fffffff' || c === '#ffffff') return '<span style="color:#fff">';
     if (c === '#000000') return '<span style="color:#000">';
     let alpha = 1;
     if (c.startsWith('#') && c.length === 10) {

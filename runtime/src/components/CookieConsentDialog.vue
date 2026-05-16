@@ -74,9 +74,7 @@ defineExpose({ show });
 <template>
     <DialogView v-model="open" @closed="onClosed">
         <template #title>Cookie 偏好设置</template>
-        <p class="dialog-desc">
-            我们使用 Cookies 来改善您的浏览体验。您可以在此处选择允许的 Cookie 类别。
-        </p>
+        <p class="dialog-desc">我们使用 Cookies 来改善您的浏览体验。您可以在此处选择允许的 Cookie 类别。</p>
         <ul class="categories">
             <li v-for="cat in CONSENT_CATEGORIES" :key="cat.key" class="category">
                 <div class="category-body">
@@ -84,14 +82,7 @@ defineExpose({ show });
                     <div class="category-desc">{{ cat.description }}</div>
                 </div>
                 <label class="toggle">
-                    <input
-                        type="checkbox"
-                        :checked="consent[cat.key]"
-                        :disabled="
-                            cat.required || (!!consent.ns && (cat.key === 'p' || cat.key === 't'))
-                        "
-                        @change="toggle(cat.key, ($event.target as HTMLInputElement).checked)"
-                    />
+                    <input type="checkbox" :checked="consent[cat.key]" :disabled="cat.required || (!!consent.ns && (cat.key === 'p' || cat.key === 't'))" @change="toggle(cat.key, ($event.target as HTMLInputElement).checked)" />
                     <span class="toggle-track"></span>
                 </label>
             </li>
