@@ -4,6 +4,10 @@
 
 body {
     box-sizing: border-box;
+    margin: 0;
+    padding: 8px;
+    margin-top: 8px;
+    padding-top: 0;
 }
 
 nav > a.nav-up {
