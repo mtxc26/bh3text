@@ -87,7 +87,7 @@ const canBack = ref(false);
 
 const prevUrl = ref<string | null>(null);
 const prevPageText = ref('');
-const goPrev = () => goNav(prevUrl.value);
+const goPrev = () => prevUrl.value && goNav(prevUrl.value);
 const navPrev = ref<{ url: string; title: string } | null>(null);
 const navNext = ref<{ url: string; title: string } | null>(null);
 
@@ -205,6 +205,7 @@ router.afterEach(() => {
 }
 .nav-links-container {
     display: flex;
+    flex-direction: row;
     gap: 0.5em;
     padding: 0 10px;
 }
@@ -213,6 +214,13 @@ router.afterEach(() => {
 }
 .nav-links-container > .btn-right {
     text-align: right;
+}
+.nav-links-container > a {
+    color: #1677ff;
+    padding: .5em;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 .toc-list {
     list-style: none;

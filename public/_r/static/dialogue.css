@@ -12,23 +12,23 @@ h2.step::before {
     content: "·";
     margin-right: 0.5em;
 }
-p {
+div.content {
     white-space: pre-wrap;
     word-break: break-word;
     overflow-wrap: anywhere;
 }
-p.desc, p.synopsis, p.dialog-line {
+div.desc, div.synopsis, div.dialog-line {
     margin: 0;
 }
-p.desc {
+div.desc {
     color: #444;
     font-size: 14px;
 }
-p.synopsis {
+div.synopsis {
     color: gray;
     font-size: 14px;
 }
-p.dialog-line {
+div.dialog-line {
     font-size: 14px;
 }
 section.stage {

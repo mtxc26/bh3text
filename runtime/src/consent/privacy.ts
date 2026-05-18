@@ -14,7 +14,7 @@ function buildIcon(): Element {
 
 function createPrivacyLink(text: string) {
     const a = document.createElement('a');
-    a.href = 'javascript:void 0';
+    a.href = '#';
     a.addEventListener('click', (e) => {
         e.preventDefault();
         (vm as any).showPrivacyCenter();
