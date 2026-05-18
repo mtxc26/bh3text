@@ -2,9 +2,6 @@ import { createCSS } from 'add-css-constructed';
 import type { ElementRegistryItem } from './types';
 
 const CSS = createCSS(`
-div {
-    display: inline;
-}
 #onlyDisplay__content {
     display: none;
 }
@@ -38,11 +35,11 @@ class a11yHelperElement extends HTMLElement {
         this._shadow = this.attachShadow({ mode: 'open' });
         CSS.attach(this._shadow);
 
-        const outer = document.createElement('div');
+        const outer = document.createElement('span');
         outer.id = 'outer_content';
         outer.append(document.createElement('slot'));
 
-        const onlyDisplay = document.createElement('div');
+        const onlyDisplay = document.createElement('span');
         onlyDisplay.id = 'onlyDisplay__content';
 
         this._shadow.append(outer, onlyDisplay);
