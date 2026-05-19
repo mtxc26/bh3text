@@ -94,8 +94,10 @@ class CgViewerElement extends LitElement {
             position: absolute;
             left: 5px;
             top: 5px;
-            border-radius: 50%;
+            border-radius: 10px;
+            border: 1px solid gray;
             background: rgba(0, 0, 0, 0.5);
+            color: white;
             font-size: large;
             z-index: 999;
         }
@@ -122,7 +124,7 @@ class CgViewerElement extends LitElement {
 
     async _checkPermission() {
         try {
-            this._allowRender = !!(await db.get('config', 'user.pref.ui.cgview.allow_render')) 
+            this._allowRender = (await db.get('config', 'user.pref.ui.cgview.allow_render')) === false ? false : true;
         } catch {
             this._allowRender = false;
         }
@@ -151,7 +153,7 @@ class CgViewerElement extends LitElement {
             return html`
                 <div class="player-container">
                     ${this._showIframe
-                        ? html`<button type=button class=newtab-btn aria-label=在新标签页中打开 @click=${this._openBlank}>↗️</button><iframe sandbox="allow-scripts allow-same-origin allow-forms" src=${inlinePlayer.src} allow="fullscreen *" allowfullscreen title=${display_name || '播放'}></iframe>`
+                        ? html`<button type=button class=newtab-btn aria-label=在新标签页中打开 @click=${this._openBlank}>新标签页打开</button><iframe sandbox="allow-scripts allow-same-origin allow-forms" src=${inlinePlayer.src} allow="fullscreen *" allowfullscreen title=${display_name || '播放'}></iframe>`
                         : html`
                               <a class="display-name" rel="noopener" target="_blank" .href=${link?.href || inlinePlayer.src}>${display_name || ''}</a>
                               <button type="button" class="play-btn" aria-label="播放" @click=${this._handlePlay}></button>
