@@ -34,6 +34,7 @@ export async function SetupLastReadUI() {
 
 export async function SaveLastReadOnPageChange() {
     const loc = new URL(window.location.href);
+    loc.hash = '';
     if (loc.pathname.startsWith('/dialog/') && loc.pathname.length > 8) {
         const raw = document.getElementById('page_title_short')?.innerText;
         const title = (() => {

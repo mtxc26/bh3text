@@ -3,7 +3,9 @@
         <a-drawer class="a-drawer sidebar" :width="Math.min(windowState.width, 250)" :headerStyle="{ padding: '0.5em 1em', border: '0' }" :bodyStyle="{ padding: 0, display: 'flex', flexDirection: 'column' }" placement="left" :closable="false" :open="appState.sidebarOpen" @close="appState.sidebarOpen = false">
             <template #title>
                 <div class="header" v-if="prevUrl">
-                    <a-button type="link" style="padding: 0" @click="goPrev"><span>{{ prevPageText || '< 返回' }}</span></a-button>
+                    <a-button type="link" style="padding: 0" @click="goPrev"
+                        ><span>{{ prevPageText || '< 返回' }}</span></a-button
+                    >
                 </div>
             </template>
             <template #extra>
@@ -189,7 +191,8 @@ router.afterEach(() => {
 .content .row {
     padding: 0;
 }
-.content-head, .content-bottom {
+.content-head,
+.content-bottom {
     padding-top: 0.5em;
     padding-bottom: 0.5em;
     --bs: 1px solid var(--color-separator);
@@ -217,7 +220,7 @@ router.afterEach(() => {
 }
 .nav-links-container > a {
     color: #1677ff;
-    padding: .5em;
+    padding: 0.5em;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;

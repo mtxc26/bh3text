@@ -4,39 +4,18 @@
             <div class="search-form-container" v-show="!!searchFormTarget">
                 <component is="style">#search-form-main { display: none !important; }</component>
                 <form action="/search/" method="GET" role="search" class="search-form" ref="searchForm">
-                    <a-input-search
-                        id="search-keyword"
-                        name="q"
-                        placeholder="输入关键词搜索..."
-                        autocomplete="on"
-                        enter-button="搜索"
-                        @search="onSearch"
-                    />
+                    <a-input-search id="search-keyword" name="q" placeholder="输入关键词搜索..." autocomplete="on" enter-button="搜索" @search="onSearch" />
                     <a-collapse ghost :expand-icon-position="'end'" class="search-options">
                         <template #expandIcon="props">
                             <caret-right-outlined :rotate="(props as any).isActive ? 90 : 0" />
                         </template>
                         <a-collapse-panel key="options" header="更多选项">
                             <div class="search-options-content">
-                                <a-input
-                                    id="search-actor-filter"
-                                    name="a"
-                                    placeholder="按角色筛选..."
-                                    autocomplete="on"
-                                    allow-clear
-                                />
+                                <a-input id="search-actor-filter" name="a" placeholder="按角色筛选..." autocomplete="on" allow-clear />
                                 <div class="search-option">
-                                    <a-checkbox name="regex" :value="1">
-                                        正则表达式搜索
-                                    </a-checkbox>
+                                    <a-checkbox name="regex" :value="1"> 正则表达式搜索 </a-checkbox>
                                 </div>
-                                <a-input
-                                    id="search-regex-flags"
-                                    name="flags"
-                                    placeholder="正则表达式标志，如 igmsu"
-                                    autocomplete="on"
-                                    allow-clear
-                                />
+                                <a-input id="search-regex-flags" name="flags" placeholder="正则表达式标志，如 igmsu" autocomplete="on" allow-clear />
                             </div>
                         </a-collapse-panel>
                     </a-collapse>

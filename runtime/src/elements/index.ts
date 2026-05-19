@@ -1,4 +1,5 @@
 import a11y_helper from './a11y-helper';
+import cg_viewer from './cg-viewer';
 import contact_email from './contact-email';
 
 export async function setup() {
@@ -10,5 +11,6 @@ export async function setup() {
         }
 
     await a11y_helper.setup();
+    await cg_viewer.setup();
     await contact_email.setup();
 }

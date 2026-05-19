@@ -65,7 +65,7 @@ async function tryServe(res, filePath) {
   try {
     const content = await readFile(filePath);
     const ext = extname(filePath).toLowerCase();
-    res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream' });
+    res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream', 'Referrer-Policy': 'no-referrer' });
     res.end(content);
     return true;
   } catch { return false; }
@@ -73,7 +73,7 @@ async function tryServe(res, filePath) {
 
 function startServer() {
   createServer(async (req, res) => {
-    let url = req.url.split('?')[0];
+    let url = decodeURI(req.url.split('?')[0]);
     if (url === '/') url = '/index.html';
 
     const filePath = join(DIST, url);
@@ -97,7 +97,7 @@ function startServer() {
     }
 
     // 2. try appending .html (for clean URLs like /dialog/foo/bar)
-    if (!extname(filePath) && await tryServe(res, filePath + '.html')) return;
+    if (await tryServe(res, filePath + '.html')) return;
 
     // 3. 404
     res.writeHead(404);
@@ -153,6 +153,7 @@ console.log('🛠  bh3text dev\n');
 console.log('📦 Initializing...');
 await runPrepare();
 console.log('  ✅ prepare done');
+await copyRuntime();
 await runEjs();
 console.log('  ✅ EJS done');
 
