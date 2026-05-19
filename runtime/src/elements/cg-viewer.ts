@@ -122,7 +122,7 @@ class CgViewerElement extends LitElement {
 
     async _checkPermission() {
         try {
-            this._allowRender = (await db.get('config', 'user.pref.ui.cgview.allow_render')) === false ? false : true;
+            this._allowRender = !!(await db.get('config', 'user.pref.ui.cgview.allow_render')) 
         } catch {
             this._allowRender = false;
         }

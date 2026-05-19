@@ -39,7 +39,7 @@ onMounted(() => init());
 
 const init = async () => {
     rememberScrollPos.value = (await db.get('config', 'user.pref.state.scroll_pos_restore')) === false ? false : true;
-    enableCgPreview.value = (await db.get('config', 'user.pref.ui.cgview.allow_render')) === false ? false : true;
+    enableCgPreview.value = (!!(await db.get('config', 'user.pref.ui.cgview.allow_render'))) === false ? false : true;
 };
 
 // ------
