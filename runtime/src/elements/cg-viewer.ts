@@ -44,13 +44,12 @@ class CgViewerElement extends LitElement {
         }
 
         .player-container a {
-            text-decoration: none;
+            text-decoration: underline dashed;
         }
 
         .display-name {
             color: #fff;
             font-size: 14px;
-            margin-bottom: 16px;
             text-align: center;
         }
 
@@ -65,6 +64,7 @@ class CgViewerElement extends LitElement {
             align-items: center;
             justify-content: center;
             transition: background 0.2s;
+            margin-top: 16px;
         }
 
         .play-btn:hover {
@@ -88,6 +88,7 @@ class CgViewerElement extends LitElement {
             width: 100%;
             height: 100%;
             border: none;
+            box-sizing: border-box;
         }
 
         .newtab-btn {
@@ -112,7 +113,7 @@ class CgViewerElement extends LitElement {
 
     get _parsedData(): CGData {
         try {
-            return JSON.parse(this.data || '{}');
+            return JSON.parse(this.data || '{}') || {};
         } catch {
             return {};
         }
@@ -155,7 +156,7 @@ class CgViewerElement extends LitElement {
                     ${this._showIframe
                         ? html`<button type=button class=newtab-btn aria-label=在新标签页中打开 @click=${this._openBlank}>新标签页打开</button><iframe sandbox="allow-scripts allow-same-origin allow-forms" src=${inlinePlayer.src} allow="fullscreen *" allowfullscreen title=${display_name || '播放'}></iframe>`
                         : html`
-                              <a class="display-name" rel="noopener" target="_blank" .href=${link?.href || inlinePlayer.src}>${display_name || ''}</a>
+                              <slot><a class="display-name" rel="noopener" target="_blank" .href=${link?.href || inlinePlayer.src}>${display_name || ''}</a></slot>
                               <button type="button" class="play-btn" aria-label="播放" @click=${this._handlePlay}></button>
                           `}
                 </div>

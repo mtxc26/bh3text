@@ -59,3 +59,10 @@ footer#site_footer #privacy_consent {
     display: inline-flex;
     align-items: center;
 }
+
+cg-viewer a, cg-viewer a:any-link {
+    color: #abcdef;
+    text-decoration: underline dashed;
+    cursor: pointer;
+}
+
