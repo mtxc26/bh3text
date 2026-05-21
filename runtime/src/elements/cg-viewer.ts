@@ -154,7 +154,7 @@ class CgViewerElement extends LitElement {
             return html`
                 <div class="player-container">
                     ${this._showIframe
-                        ? html`<button type=button class=newtab-btn aria-label=在新标签页中打开 @click=${this._openBlank}>新标签页打开</button><iframe sandbox="allow-scripts allow-same-origin allow-forms" src=${inlinePlayer.src} allow="fullscreen *" allowfullscreen title=${display_name || '播放'}></iframe>`
+                        ? html`<button type=button class=newtab-btn aria-label=在新标签页中打开 @click=${this._openBlank}>新标签页打开</button><iframe credentialless sandbox="allow-scripts allow-same-origin allow-forms allow-orientation-lock allow-pointer-lock" src=${inlinePlayer.src} allow="autoplay; fullscreen; encrypted-media" allowfullscreen="true" title=${display_name || '播放'}></iframe>`
                         : html`
                               <slot><a class="display-name" rel="noopener" target="_blank" .href=${link?.href || inlinePlayer.src}>${display_name || ''}</a></slot>
                               <button type="button" class="play-btn" aria-label="播放" @click=${this._handlePlay}></button>
