@@ -20,6 +20,7 @@ class CgViewerElement extends LitElement {
     static properties = {
         _allowRender: { state: true },
         _showIframe: { state: true },
+        _inlineActive: { type: Boolean, reflect: true, attribute: 'data-inline' },
         cg: { type: String, reflect: true },
         data: { type: String, reflect: true },
     };
@@ -111,6 +112,8 @@ class CgViewerElement extends LitElement {
 
     declare _allowRender: boolean | null;
 
+    declare _inlineActive: boolean;
+
     get _parsedData(): CGData {
         try {
             return JSON.parse(this.data || '{}') || {};
@@ -137,6 +140,11 @@ class CgViewerElement extends LitElement {
 
     _openBlank() { 
         if (this._parsedData.link) window.open(this._parsedData.link.href, '_blank');
+    }
+
+    willUpdate(_changedProperties: Map<string, any>) {
+        const { inlinePlayer } = this._parsedData;
+        this._inlineActive = this._allowRender === true && !!(inlinePlayer?.enabled && inlinePlayer?.src);
     }
 
     render() {

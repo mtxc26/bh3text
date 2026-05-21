@@ -60,8 +60,13 @@ footer#site_footer #privacy_consent {
     align-items: center;
 }
 
-cg-viewer a, cg-viewer a:any-link {
+cg-viewer[data-inline] a, cg-viewer[data-inline] a:any-link {
     color: #abcdef;
+    text-decoration: underline dashed;
+    cursor: pointer;
+}
+cg-viewer:not([data-inline]) a, cg-viewer:not([data-inline]) a:any-link {
+    color: var(--link-color);
     text-decoration: underline dashed;
     cursor: pointer;
 }

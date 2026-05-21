@@ -9,7 +9,7 @@ import MyApp from './App.vue';
 import { init } from './init';
 import type { CookieConsent } from '@/consent/types';
 import '@/styles/style.css';
-import { onPageLoadFinish } from './lifecycle';
+import { onPageLoadFinish, onSettingsChange } from './lifecycle';
 
 interface RuntimeVM extends ComponentPublicInstance {
     showConsentDialog(existing?: CookieConsent): Promise<CookieConsent>;
@@ -73,6 +73,7 @@ export async function setupApp() {
             if (count !== initCount) return; // avoid duplicate:wq
 
             await onPageLoadFinish(to);
+            await onSettingsChange();
         });
     })();
     vm = app.mount(appc) as any as MyVM;

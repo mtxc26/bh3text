@@ -17,7 +17,6 @@ const CSS = createCSS(`
     color: transparent;
     overflow: hidden;
     box-sizing: border-box;
-    user-select: text;
 }
 :host([type="onlyDisplay"]) #onlyDisplay__content {
     display: inline;
