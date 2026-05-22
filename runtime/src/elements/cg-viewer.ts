@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { db } from '@/data';
+import { getSettings } from '@/settings';
 import type { ElementRegistryItem } from './types';
 
 interface CGData {
@@ -128,7 +128,7 @@ class CgViewerElement extends LitElement {
 
     async _checkPermission() {
         try {
-            this._allowRender = (await db.get('config', 'user.pref.ui.cgview.allow_render')) === false ? false : true;
+            this._allowRender = await getSettings('user.pref.ui.cgview.allow_render');
         } catch {
             this._allowRender = false;
         }
@@ -138,7 +138,7 @@ class CgViewerElement extends LitElement {
         this._showIframe = true;
     }
 
-    _openBlank() { 
+    _openBlank() {
         if (this._parsedData.link) window.open(this._parsedData.link.href, '_blank');
     }
 
@@ -162,7 +162,7 @@ class CgViewerElement extends LitElement {
             return html`
                 <div class="player-container">
                     ${this._showIframe
-                        ? html`<button type=button class=newtab-btn aria-label=在新标签页中打开 @click=${this._openBlank}>新标签页打开</button><iframe credentialless sandbox="allow-scripts allow-same-origin allow-forms allow-orientation-lock allow-pointer-lock" src=${inlinePlayer.src} allow="autoplay; fullscreen; encrypted-media" allowfullscreen="true" title=${display_name || '播放'}></iframe>`
+                        ? html`<button type="button" class="newtab-btn" aria-label="在新标签页中打开" @click=${this._openBlank}>新标签页打开</button><iframe credentialless sandbox="allow-scripts allow-same-origin allow-forms allow-orientation-lock allow-pointer-lock" src=${inlinePlayer.src} allow="autoplay; fullscreen; encrypted-media" allowfullscreen="true" title=${display_name || '播放'}></iframe>`
                         : html`
                               <slot><a class="display-name" rel="noopener" target="_blank" .href=${link?.href || inlinePlayer.src}>${display_name || ''}</a></slot>
                               <button type="button" class="play-btn" aria-label="播放" @click=${this._handlePlay}></button>

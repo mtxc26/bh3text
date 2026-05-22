@@ -6,7 +6,7 @@ export async function setupHashHighlight() {
         const el = document.getElementById(hash.slice(1));
         if (!el) return;
 
-        el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 
         const range = new Range();
         range.selectNodeContents(el);

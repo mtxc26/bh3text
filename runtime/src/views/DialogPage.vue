@@ -150,4 +150,10 @@ nav.page-nav {
     position: static;
     border-bottom: 0;
 }
+:root.dialog-settings-no-copy-descriptive .dialog-descriptive {
+    user-select: none;
+}
+:root.dialog-settings-no-synopsis .content.synopsis {
+    display: none !important;
+}
 </style>

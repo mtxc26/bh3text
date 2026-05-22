@@ -95,6 +95,3 @@ cg-viewer {
 [id] {
     scroll-margin-top: calc(1em + 14px + 10px);
 }
-:root.dialog-settings-no-copy-descriptive .dialog-descriptive {
-    user-select: none;
-}

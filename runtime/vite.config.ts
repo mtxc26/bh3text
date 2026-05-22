@@ -25,7 +25,7 @@ export default defineConfig({
     rolldownOptions: {
       input: {
         common: resolve(fileURLToPath(new URL('./', import.meta.url)), './src/bootstrap/common.ts'),
-        'a11y-helper': resolve(fileURLToPath(new URL('./', import.meta.url)), './src/bootstrap/a11y-helper.ts'),
+        elements: resolve(fileURLToPath(new URL('./', import.meta.url)), './src/bootstrap/elements.ts'),
         'contact-email': resolve(fileURLToPath(new URL('./', import.meta.url)), './src/bootstrap/contact-email.ts'),
       },
       output: {
