@@ -28,6 +28,7 @@
                 <li><a href="<%= item.url %>"><%= item.label %></a></li><% }) -%>
             </ul><% }) -%>
         </main>
+        <nav class="chapter-nav"><% if (typeof prevChapter === 'object' && prevChapter) { -%><a class="nav-prev" href="<%= prevChapter.url %>" rel="prev">← <%= prevChapter.title %></a><% } -%><% if (typeof nextChapter === 'object' && nextChapter) { -%><a class="nav-next" href="<%= nextChapter.url %>" rel="next"><%= nextChapter.title %> →</a><% } -%></nav>
         <%- include('_footer') %>
         <script type="module" src="/_r/runtime/common.js"></script>
     </body>

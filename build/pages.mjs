@@ -45,8 +45,8 @@ export async function pages() {
     // ======== 1. Home page ========
     const modules = [
         { id: 'home_LastRead', name: '上次阅读', url: '/', desc: '暂时没有上次阅读记录' },
-        { name: '对话', url: '/dialog/', desc: '对话文本' },
-        { name: '搜索', url: '/search/', desc: '全局搜索对话文本' },
+        { name: '主线', url: '/dialog/', desc: '主线对话文本' },
+        { name: '往世乐土', url: '/dialog/#group-main-10', desc: '往世乐土对话文本' },
     ];
     let html;
     html = ejs.render(tplHome, { modules }, { rmWhitespace: true, filename: join(ROOT, 'page/home.ejs') });
@@ -71,6 +71,7 @@ export async function pages() {
                     items: erCh.map((ch) => ({
                         url: `/dialog/er/${ch.chapter}/`,
                         label: ch.title,
+                        chapter: ch.chapter,
                     })),
                 });
             }
@@ -79,11 +80,12 @@ export async function pages() {
                 items: chapters.map((ch) => ({
                     url: `/dialog/${urlDir}/${ch.chapter}/`,
                     label: chapterFullLabel(ch),
+                    chapter: ch.chapter,
                 })),
             });
             arcIdx++;
         }
-        sections.push({ label, groups });
+        sections.push({ typeKey, label, groups });
     }
     await mkdir(join(DIST_DIR, 'dialog'), { recursive: true });
     html = ejs.render(tplDialog, { sections }, { rmWhitespace: true, filename: join(ROOT, 'page/dialog-index.ejs') });
@@ -109,6 +111,24 @@ export async function pages() {
     }
     const validMain1 = buildValidPages(pagesMain1);
     const validMain2 = buildValidPages(pagesMain2);
+
+    // Build flat ordered chapter list for prev/next links
+    const allChapters = []; // { typeKey, urlDir, chapter, title, idx, arcName }
+    for (const [typeKey, urlDir] of Object.entries(DOMAIN_URL_MAP)) {
+        if (typeKey !== 'main' && typeKey !== 'main2') continue;
+        const fn = typeKey === 'main' ? 'main.json' : 'main2.json';
+        const idx = await loadJSON(join(DATA_DIR, 'index', fn));
+        for (const [arcName, chapters] of Object.entries(idx)) {
+            for (const ch of chapters) {
+                allChapters.push({
+                    typeKey, urlDir,
+                    chapter: String(ch.chapter),
+                    title: chapterFullLabel(ch),
+                    idx, arcName, ch,
+                });
+            }
+        }
+    }
 
     for (const [typeKey, urlDir] of Object.entries(DOMAIN_URL_MAP)) {
         if (typeKey !== 'main' && typeKey !== 'main2') continue;
@@ -261,6 +281,10 @@ export async function pages() {
                 }
 
                 const title = chapterFullLabel(ch);
+                // Find prev/next chapter in flat list
+                const myIdx = allChapters.findIndex(ac => ac.typeKey === typeKey && ac.chapter === String(ch.chapter));
+                const prevCh = myIdx > 0 ? allChapters[myIdx - 1] : null;
+                const nextCh = myIdx < allChapters.length - 1 ? allChapters[myIdx + 1] : null;
                 html = ejs.render(
                     tplChapter,
                     {
@@ -268,6 +292,8 @@ export async function pages() {
                         titleB64: Buffer.from(title).toString('base64'),
                         groups,
                         canonicalUrl: SITE_BASE + `/dialog/${urlDir}/${ch.chapter}/`,
+                        prevChapter: prevCh ? { url: `/dialog/${prevCh.urlDir}/${prevCh.chapter}/`, title: prevCh.title } : null,
+                        nextChapter: nextCh ? { url: `/dialog/${nextCh.urlDir}/${nextCh.chapter}/`, title: nextCh.title } : null,
                     },
                     { rmWhitespace: true, filename: join(ROOT, 'page/chapter-index.ejs') },
                 );

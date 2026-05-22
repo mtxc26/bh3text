@@ -27,14 +27,14 @@
         </header>
         <main id="main-content">
             <% sections.forEach(function(sec) { %>
-            <details open>
+            <details open id="section-<%= sec.typeKey %>">
                 <summary><%= sec.label %></summary>
-                <% sec.groups.forEach(function(g) { %>
-                <details open>
+                <% sec.groups.forEach(function(g, gi) { %>
+                <details open id="group-<%= sec.typeKey %>-<%= gi %>">
                     <summary><%= g.heading %></summary>
                     <ul>
                         <% g.items.forEach(function(item) { %>
-                        <li><a href="<%= item.url %>"><%= item.label %></a></li>
+                        <li id="chapter-<%= sec.typeKey %>-<%= item.chapter %>"><a href="<%= item.url %>"><%= item.label %></a></li>
                         <% }) %>
                     </ul>
                 </details>

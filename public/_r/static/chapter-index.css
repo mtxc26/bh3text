@@ -25,4 +25,14 @@ main li {
 }
 main li a {
     color: #3366cc;
+}.chapter-nav {
+    display: flex;
+    justify-content: space-between;
+    margin: 24px 0 0 0;
+    padding: 12px 0;
+    border-top: 1px solid #eee;
+    font-size: 14px;
+}
+.chapter-nav a {
+    color: #3366cc;
 }

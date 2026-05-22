@@ -15,3 +15,19 @@ a {
     color: #666;
     font-size: 14px;
 }
+#homepage-search-form {
+    display: flex;
+    gap: 0.5em;
+}
+#homepage-search-form > * {
+    border: 1px solid #eee;
+    border-radius: 5px;
+    padding: 5px;
+}
+#homepage-search-form > input {
+    flex: 1;
+}
+#homepage-search-form > button {
+    background: #3366cc;
+    color: #fff;
+}
