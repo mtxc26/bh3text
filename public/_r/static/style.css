@@ -25,6 +25,7 @@
     overflow: hidden;
     z-index: 1002;
     padding: 10px;
+    user-select: none;
 }
 .skip-link:focus {
     top: 0;
@@ -69,5 +70,20 @@ cg-viewer:not([data-inline]) a, cg-viewer:not([data-inline]) a:any-link {
     color: var(--link-color);
     text-decoration: underline dashed;
     cursor: pointer;
+}
+
+:root.copy-optimize :is(
+    nav,
+    footer,
+    script,
+    #page-footer-nav-container,
+    .app-main-app-sidebar,
+    .app-main-app-sidebar *,
+    .vapp-content-main-wrapper :is(
+        .sidebar-wrapper,
+        .settings-container
+    )
+) {
+    user-select: none;
 }
 

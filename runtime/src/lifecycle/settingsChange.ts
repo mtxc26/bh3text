@@ -10,6 +10,9 @@ export async function onSettingsChange() {
         }
     };
 
+    const copyOptimize = await getSettings('user.pref.ui.copy_optimize');
+    setClass('copy-optimize', copyOptimize);
+
     const copyPref = await getSettings('user.pref.ui.copy_pref');
     setClass('dialog-settings-no-copy-descriptive', copyPref === 2 ? true : false);
 

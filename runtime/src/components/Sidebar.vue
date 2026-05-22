@@ -1,6 +1,6 @@
 <template>
     <div class="sidebar-wrapper">
-        <a-drawer class="a-drawer sidebar" :width="Math.min(windowState.width, 250)" :headerStyle="{ padding: '0.5em 1em', border: '0' }" :bodyStyle="{ padding: 0, display: 'flex', flexDirection: 'column' }" placement="left" :closable="false" :open="appState.sidebarOpen" @close="appState.sidebarOpen = false">
+        <a-drawer class="a-drawer sidebar app-main-app-sidebar" :width="Math.min(windowState.width, 250)" :headerStyle="{ padding: '0.5em 1em', border: '0' }" :bodyStyle="{ padding: 0, display: 'flex', flexDirection: 'column' }" placement="left" :closable="false" :open="appState.sidebarOpen" @close="appState.sidebarOpen = false">
             <template #title>
                 <div class="header" v-if="prevUrl">
                     <a-button type="link" style="padding: 0" @click="goPrev"
