@@ -8,11 +8,15 @@
             </div>
 
             <div class="settings-panel-group">
+                <div class="title">阅读设置</div>
+                <div class="row"><a-check :checked="showSynopsis" @update:checked="toggleSynopsis">显示梗概</a-check></div>
+            </div>
+
+            <div class="settings-panel-group">
                 <div class="title">通用选项</div>
                 <!-- TODO: 主题切换（深他模式/浅色模式） -->
                 <div class="row">复制文本时:&nbsp;<a-segmented :value="copyPrefName" @update:value="(setCopyPref as any)" :options="Object.keys(copyPrefValues)"></a-segmented></div>
                 <div class="row"><a-check :checked="copyOptimize" @update:checked="toggleCopyOptimize">复制体验优化</a-check><span style="display: inline-block; width: 1em;"></span><a aria-label="显示关于“复制优化”功能的帮助" href="#" @click.prevent="showCopyOptimizeHelp = true">?</a></div>
-                <div class="row"><a-check :checked="showSynopsis" @update:checked="toggleSynopsis">显示梗概</a-check></div>
                 <div class="row"><a-check :checked="rememberScrollPos" @update:checked="toggleScrollPos">记住上次阅读的位置</a-check> <a-button type="link" style="padding: 0" @click.prevent.stop="clearScrollPos">(清除所有记录)</a-button></div>
             </div>
 

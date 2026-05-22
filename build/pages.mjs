@@ -133,41 +133,82 @@ export async function pages() {
                 let groups;
                 if (chData && vp.size > 0) {
                     if (typeKey === 'main') {
-                        // main1: stages 是数组，按 act 分组
-                        groups = [];
-                        const used = new Set();
+                        // Build stage-data order: [ {pid, title, actName}, ... ]
+                        const stageOrder = [];
+                        const stageTitleMap = new Map();
                         for (const act of chData.stages || []) {
-                            const groupItems = [];
                             for (const sec of act.data || []) {
-                                // 跳过 displayName 为空的条目，且必须确认页面实际存在
                                 if (!sec.displayName) continue;
                                 if (!vp.has(sec.displayName)) continue;
-                                used.add(sec.displayName);
-                                groupItems.push({
-                                    url: `/dialog/${urlDir}/${ch.chapter}/${encodeURIComponent(sec.displayName)}`,
-                                    label: `${sec.displayName} ${sec.displayTitle || ''}`,
+                                stageOrder.push(sec.displayName);
+                                stageTitleMap.set(sec.displayName, {
+                                    title: sec.displayTitle || '',
+                                    actName: act.actData?.actName || '',
                                 });
                             }
-                            if (groupItems.length)
-                                groups.push({
-                                    heading: act.actData?.actName || '',
-                                    items: groupItems,
-                                });
                         }
-                        // 补充 pages JSON 中有但未被 stages 覆盖的页面
-                        const extraItems = [];
+                        // Content order from pages JSON (dialog index order)
+                        const contentOrder = [];
+                        const contentSet = new Set();
                         for (const pid of vp) {
-                            if (!used.has(pid))
-                                extraItems.push({
-                                    url: `/dialog/${urlDir}/${ch.chapter}/${encodeURIComponent(pid)}`,
-                                    label: pid,
-                                });
+                            contentOrder.push(pid);
+                            contentSet.add(pid);
                         }
-                        if (extraItems.length)
-                            groups.push({
-                                heading: groups.length === 0 ? '' : '其他',
-                                items: extraItems,
-                            });
+                        // Check if stage order matches content order (ignoring entries not in stage data)
+                        const stageOnly = stageOrder.filter(p => contentSet.has(p));
+                        const contentOnlyInStage = contentOrder.filter(p => stageOrder.includes(p));
+                        const orderMatches = stageOnly.length === contentOnlyInStage.length &&
+                            stageOnly.every((p, i) => p === contentOnlyInStage[i]);
+                        // Only use grouped display when ALL items are in stage data AND order matches
+                        const allInStage = contentOrder.every(p => stageOrder.includes(p));
+
+                        if (orderMatches && stageOrder.length > 0 && allInStage) {
+                            // Use grouped display
+                            groups = [];
+                            const used = new Set();
+                            for (const act of chData.stages || []) {
+                                const groupItems = [];
+                                for (const sec of act.data || []) {
+                                    if (!sec.displayName) continue;
+                                    if (!vp.has(sec.displayName)) continue;
+                                    used.add(sec.displayName);
+                                    const t = stageTitleMap.get(sec.displayName);
+                                    groupItems.push({
+                                        url: `/dialog/${urlDir}/${ch.chapter}/${encodeURIComponent(sec.displayName)}`,
+                                        label: `${sec.displayName} ${t.title}`,
+                                    });
+                                }
+                                if (groupItems.length)
+                                    groups.push({
+                                        heading: act.actData?.actName || '',
+                                        items: groupItems,
+                                    });
+                            }
+                            // Extra items not in stage data
+                            const extraItems = [];
+                            for (const pid of contentOrder) {
+                                if (!used.has(pid))
+                                    extraItems.push({
+                                        url: `/dialog/${urlDir}/${ch.chapter}/${encodeURIComponent(pid)}`,
+                                        label: pid,
+                                    });
+                            }
+                            if (extraItems.length)
+                                groups.push({ heading: '其他', items: extraItems });
+                        } else {
+                            // Flat list in content order
+                            groups = [];
+                            const items = [];
+                            for (const pid of contentOrder) {
+                                const t = stageTitleMap.get(pid);
+                                items.push({
+                                    url: `/dialog/${urlDir}/${ch.chapter}/${encodeURIComponent(pid)}`,
+                                    label: t ? `${pid} ${t.title}` : pid,
+                                });
+                            }
+                            if (items.length)
+                                groups.push({ heading: '', items });
+                        }
                     } else {
                         // main2: stages 是 dict，按 STAGE_ORDER 分组
                         groups = [];
