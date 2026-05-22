@@ -133,6 +133,11 @@ export async function pages() {
                 let groups;
                 if (chData && vp.size > 0) {
                     if (typeKey === 'main') {
+                        // Build owTitle fallback map from chapter data content
+                        const contentOwTitle = new Map();
+                        for (const ci of chData.content || []) {
+                            if (ci.owTitle) contentOwTitle.set(ci.id, ci.owTitle);
+                        }
                         // Build stage-data order: [ {pid, title, actName}, ... ]
                         const stageOrder = [];
                         const stageTitleMap = new Map();
@@ -187,11 +192,13 @@ export async function pages() {
                             // Extra items not in stage data
                             const extraItems = [];
                             for (const pid of contentOrder) {
-                                if (!used.has(pid))
+                                if (!used.has(pid)) {
+                                    const ow = contentOwTitle.get(pid);
                                     extraItems.push({
                                         url: `/dialog/${urlDir}/${ch.chapter}/${encodeURIComponent(pid)}`,
-                                        label: pid,
+                                        label: ow ? `${pid} ${ow}` : pid,
                                     });
+                                }
                             }
                             if (extraItems.length)
                                 groups.push({ heading: '其他', items: extraItems });
@@ -201,9 +208,11 @@ export async function pages() {
                             const items = [];
                             for (const pid of contentOrder) {
                                 const t = stageTitleMap.get(pid);
+                                const ow = contentOwTitle.get(pid);
+                                const label = t && t.title ? `${pid} ${t.title}` : (ow ? `${pid} ${ow}` : pid);
                                 items.push({
                                     url: `/dialog/${urlDir}/${ch.chapter}/${encodeURIComponent(pid)}`,
-                                    label: t ? `${pid} ${t.title}` : pid,
+                                    label,
                                 });
                             }
                             if (items.length)
