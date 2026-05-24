@@ -153,10 +153,12 @@ export async function pages() {
                 let groups;
                 if (chData && vp.size > 0) {
                     if (typeKey === 'main') {
-                        // Build owTitle fallback map from chapter data content
+                        // Build title fallback maps from chapter data content
                         const contentOwTitle = new Map();
+                        const contentIdxTitle = new Map();
                         for (const ci of chData.content || []) {
                             if (ci.owTitle) contentOwTitle.set(ci.id, ci.owTitle);
+                            if (ci.idxTitle) contentIdxTitle.set(ci.id, ci.idxTitle);
                         }
                         // Build stage-data order: [ {pid, title, actName}, ... ]
                         const stageOrder = [];
@@ -213,7 +215,7 @@ export async function pages() {
                             const extraItems = [];
                             for (const pid of contentOrder) {
                                 if (!used.has(pid)) {
-                                    const ow = contentOwTitle.get(pid);
+                                    const ow = contentOwTitle.get(pid) || contentIdxTitle.get(pid);
                                     extraItems.push({
                                         url: `/dialog/${urlDir}/${ch.chapter}/${encodeURIComponent(pid)}`,
                                         label: ow ? `${pid} ${ow}` : pid,
@@ -228,7 +230,7 @@ export async function pages() {
                             const items = [];
                             for (const pid of contentOrder) {
                                 const t = stageTitleMap.get(pid);
-                                const ow = contentOwTitle.get(pid);
+                                const ow = contentOwTitle.get(pid) || contentIdxTitle.get(pid);
                                 const label = t && t.title ? `${pid} ${t.title}` : (ow ? `${pid} ${ow}` : pid);
                                 items.push({
                                     url: `/dialog/${urlDir}/${ch.chapter}/${encodeURIComponent(pid)}`,
