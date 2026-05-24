@@ -1,20 +1,23 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { Modal } from 'ant-design-vue';
 import { DialogView } from 'vue-dialog-view/cssless';
 import type { CookieConsent } from '@/consent/types';
 import { readConsent, writeConsent } from '@/consent/manager';
+import { isGPCEnabled } from '@/consent/gpc';
 
 const emit = defineEmits<{ confirmed: [] }>();
 
 const open = ref(false);
 const ns = ref(true);
+const gpcEnabled = computed(() => isGPCEnabled());
 let _resolve: ((v: boolean) => void) | null = null;
 let _confirmed = false;
 
 function show(): Promise<boolean> {
     _confirmed = false;
-    ns.value = !!readConsent()?.ns;
+    // When GPC is enabled, ns is forced to true
+    ns.value = gpcEnabled.value ? true : !!readConsent()?.ns;
     open.value = true;
     return new Promise((r) => {
         _resolve = r;
@@ -67,10 +70,11 @@ defineExpose({ show });
 <template>
     <DialogView v-model="open" @closed="onClosed">
         <template #title>Do Not Sell My Personal Information</template>
-        <label class="option">
-            <input type="checkbox" v-model="ns" />
+        <label class="option" :class="{ 'gpc-locked': gpcEnabled }">
+            <input type="checkbox" v-model="ns" :disabled="gpcEnabled" />
             <div class="option-body">
                 <div class="option-label">Do Not Sell My Personal Information</div>
+                <div v-if="gpcEnabled" class="gpc-hint">您的浏览器已启用 Global Privacy Control (GPC)，此选项将被强制开启。</div>
             </div>
         </label>
         <div class="actions">
@@ -141,5 +145,14 @@ defineExpose({ show });
 .btn-secondary {
     background: #f0f0f0;
     color: #333;
+}.gpc-locked {
+    border-color: #4a90d9;
+    background: #f0f6ff;
+}
+.gpc-hint {
+    font-size: 12px;
+    color: #4a90d9;
+    margin-top: 6px;
+    line-height: 1.4;
 }
 </style>
