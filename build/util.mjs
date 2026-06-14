@@ -83,7 +83,7 @@ export async function addAssetRefs(html) {
 let _erChapters = null;
 export async function getErChapters() {
     if (_erChapters) return _erChapters;
-    const data = new Function('let Util;' + (await readFile(join(__dirname, '..', 'data', 'dist', 'basic', 'basic.js'), 'utf-8')) + ';return GameRogueData')();
+    const data = new Function('let Util;' + (await readFile(join(__dirname, '..', 'data', 'dist', 'basic', 'basic-static.js'), 'utf-8')) + ';return GameRogueData')();
     _erChapters = Object.entries(data).map(([ch, v]) => ({
         chapter: ch,
         title: v.title,
